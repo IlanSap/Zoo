@@ -71,6 +71,12 @@ public class Zoo
     }
 
 
+    public void AddNewAnimalType(string animalType)
+    {
+        // TO-DO: Implement this function
+    }
+
+
     public void GenerateAnimals(string animalType, int count)
     {
         IAnimalFactory factory;
