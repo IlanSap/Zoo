@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 
 public class Zoo
@@ -68,6 +69,12 @@ public class Zoo
     public void AddAnimal(IAnimal animal)
     {
         _animals.Add(animal);
+    }
+
+
+    public void AddNewAnimalType(string animalType)
+    {
+        // TO-DO: Implement this function
     }
 
 
@@ -173,7 +180,8 @@ public class Zoo
 
             // Attempt to move the animal in a random direction (up, down, left, right)
             // Try each direction until a valid move is found or all directions are exhausted
-            var directions = new List<(int, int)> { (-1, 0), (1, 0), (0, -1), (0, 1) }; // Up, Down, Left, Right
+            //var directions = new List<(int, int)> { (-1, 0), (1, 0), (0, -1), (0, 1) }; // Up, Down, Left, Right
+            var directions = new List<Tuple<int, int>>(animal.MoveDirections);
             int newRow = -1, newCol = -1;
             while (directions.Count > 0 && !moved)
             {
