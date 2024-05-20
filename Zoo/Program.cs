@@ -22,7 +22,24 @@ class Program
 
         while (true)
         {
-            Console.WriteLine("Choose Option: \n1. Add Lion \n2. Add Monkey \n3. Move All Animals  \n4. Generate Animals \n5. Start Moving Animals Timer \n6. EXIT");
+            // TO_DO: Make the options dynamic (for example add option to add new animal types to the zoo)
+            //Console.WriteLine("Choose Option: \n1. Add Lion \n2. Add Monkey \n3. Move All Animals  \n4. Generate Animals \n5. Start Moving Animals Timer \n6. EXIT");
+            Console.WriteLine("Choose Option: \n1. Add Lion \n2. Add Monkey \n3. Add new type of animal \n4. Move All Animals  \n5. Generate Animals \n6. Start Moving Animals Timer \n7. EXIT");
+
+            /*Console.WriteLine("Zoo Management System");
+            Console.WriteLine("1. Add Animal");
+            Console.WriteLine("2. Remove Animal");
+            Console.WriteLine("3. Find Animal by Name");
+            Console.WriteLine("4. Count Animals");
+            Console.WriteLine("5. List All Animals");
+            Console.WriteLine("6. Exit");
+            Console.Write("Select an option: ");*/
+
+            //Console.WriteLine("3. Find Animal by Name");
+            //Console.WriteLine("4. Count Animals");
+            //Console.WriteLine("5. List All Animals");
+            //Console.WriteLine("6. Exit");
+            Console.Write("Select an option: ");
             if (!int.TryParse(Console.ReadLine(), out int option))
             {
                 Console.WriteLine("Invalid option. Please enter a number between 1 and 6.");
@@ -46,10 +63,21 @@ class Program
                     zoo.PlotZoo();
                     continue;
                 case 3:
+                    Console.WriteLine("Enter animal type:");
+                    string newAnimalType = Console.ReadLine();
+                    if (string.IsNullOrEmpty(newAnimalType))
+                    {
+                        Console.WriteLine("Invalid input for animal type. Please enter a non-empty string.");
+                        continue;
+                    }
+                    zoo.AddNewAnimalType(newAnimalType);
+                    Console.WriteLine($"New animal type '{newAnimalType}' added to the zoo.");
+                    continue;
+                case 4:
                     zoo.MoveAllAnimals();
                     zoo.PlotZoo();
                     continue;
-                case 4:
+                case 5:
                     Console.WriteLine("Enter animal type (Lion/Monkey):");
                     string animalType = Console.ReadLine();
                     Console.WriteLine("Enter number of animals to generate:");
@@ -61,7 +89,7 @@ class Program
                     zoo.GenerateAnimals(animalType, count);
                     zoo.PlotZoo();
                     continue;
-                case 5:
+                case 6:
                     if (moveAnimalsTimer == null)
                     {
                         Console.WriteLine("Enter the interval for moving animals (in seconds):");
@@ -79,7 +107,7 @@ class Program
                         Console.WriteLine("Timer is already running.");
                     }
                     continue;
-                case 6:
+                case 7:
                     moveAnimalsTimer?.Dispose();
                     Environment.Exit(0);
                     break;
@@ -106,7 +134,7 @@ class Program
         //Console.Clear(); // Clear the console to remove the previous zoo map
         zoo.MoveAllAnimals();
         //zoo.PlotZoo();
-        //Console.WriteLine("Animals moved automatically.");
+        Console.WriteLine("Animals moved automatically.");
     }
 }
 
