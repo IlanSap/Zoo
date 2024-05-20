@@ -4,7 +4,7 @@ public class Lion : IAnimal
 {
     public string Name { get; private set; }
 
-    // set MoveDirections for Lion
+    // set MoveDirections for Lion: (0, 1), (0, -1), (-1, 0), (1, 0)
     public List<Tuple<int, int>> MoveDirections { get; } = new List<Tuple<int, int>>()
     {
         new Tuple<int, int>(0, 1),
@@ -36,7 +36,7 @@ public class Monkey : IAnimal
 {
     public string Name { get; private set; }
 
-    // set MoveDirections for Monkey
+    // set MoveDirections for Monkey: (0, 2), (0, -2), (-2, 0), (2, 0)
     public List<Tuple<int, int>> MoveDirections { get; } = new List<Tuple<int, int>>()
     {
         new Tuple<int, int>(0, 2),

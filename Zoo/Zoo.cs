@@ -229,7 +229,7 @@ public class Zoo
                     //UpdateSpecificCellsAfterAnimalMove(currentRow, currentCol, newRow, newCol);
                     UpdateSpecificCellsAfterAnimalMove2(currentRow, currentCol, newRow, newCol);
 
-                    Console.SetCursorPosition(lastCourserPosition.col, lastCourserPosition.row);
+                    Console.SetCursorPosition(lastCourserPosition.col, lastCourserPosition.row+9);
                 }
                 // Optionally, call the animal's Move method to print the moving message
                 //animal.Move();
@@ -252,6 +252,7 @@ public class Zoo
         for (int col = 0; col < _zooMap[0].Length; col++)
         {
             Console.Write($"{col % 10,2} "); // Use modulo for double-digit numbers, with padding for alignment
+            //Console.Write($"{col,2} ");
         }
         Console.WriteLine();
 
@@ -267,6 +268,7 @@ public class Zoo
         {
             // Print row indicator with padding for alignment
             Console.Write($"{i % 10,3} |"); // Use modulo for double-digit numbers
+            //Console.Write($"{i,3} |");
 
             for (int j = 0; j < _zooMap[i].Length; j++)
             {
@@ -314,6 +316,8 @@ public class Zoo
         Console.BackgroundColor = originalBackgroundColor;
         Console.ForegroundColor = originalForegroundColor;
     }
+
+
 
 
     public void UpdateSpecificCellsAfterAnimalMove2(int oldRow, int oldCol, int newRow, int newCol)

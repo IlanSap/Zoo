@@ -134,7 +134,7 @@ class Program
         //Console.Clear(); // Clear the console to remove the previous zoo map
         zoo.MoveAllAnimals();
         //zoo.PlotZoo();
-        Console.WriteLine("Animals moved automatically.");
+        //Console.WriteLine("Animals moved automatically.");
     }
 }
 
