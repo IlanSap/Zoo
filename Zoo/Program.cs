@@ -24,21 +24,15 @@ class Program
         {
             // TO_DO: Make the options dynamic (for example add option to add new animal types to the zoo)
             //Console.WriteLine("Choose Option: \n1. Add Lion \n2. Add Monkey \n3. Move All Animals  \n4. Generate Animals \n5. Start Moving Animals Timer \n6. EXIT");
-            Console.WriteLine("Choose Option: \n1. Add Lion \n2. Add Monkey \n3. Add new type of animal \n4. Move All Animals  \n5. Generate Animals \n6. Start Moving Animals Timer \n7. EXIT");
 
-            /*Console.WriteLine("Zoo Management System");
-            Console.WriteLine("1. Add Animal");
-            Console.WriteLine("2. Remove Animal");
-            Console.WriteLine("3. Find Animal by Name");
-            Console.WriteLine("4. Count Animals");
-            Console.WriteLine("5. List All Animals");
-            Console.WriteLine("6. Exit");
-            Console.Write("Select an option: ");*/
-
-            //Console.WriteLine("3. Find Animal by Name");
-            //Console.WriteLine("4. Count Animals");
-            //Console.WriteLine("5. List All Animals");
-            //Console.WriteLine("6. Exit");
+            Console.WriteLine("Zoo Managment System");
+            Console.WriteLine("1. Add Lion");
+            Console.WriteLine("2. Add Monkey");
+            Console.WriteLine("3. Add new type of animal");
+            Console.WriteLine("4. Move All Animals");
+            Console.WriteLine("5. Generate Animals");
+            Console.WriteLine("6. Start Moving Animals Timer");
+            Console.WriteLine("7. EXIT");
             Console.Write("Select an option: ");
             if (!int.TryParse(Console.ReadLine(), out int option))
             {
@@ -57,7 +51,7 @@ class Program
                     continue;
                 case 2:
                     IAnimalFactory monkeyFactory = new MonkeyFactory();
-                    IAnimal monkey = monkeyFactory.CreateAnimal("George");
+                    IAnimal monkey = monkeyFactory.CreateAnimal("Kofiko");
                     zoo.AddAnimal(monkey);
                     zoo.PlaceAnimal2(monkey);
                     zoo.PlotZoo();
