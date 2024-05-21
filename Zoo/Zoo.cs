@@ -25,14 +25,6 @@ public class Zoo
     };
 
 
-    // TO-DO: Decide if the AnimalPosition should be in this file or in the IAnimal.cs file
-    // sotre the position of the animal in the zoo (top-left corner)
-    struct AnimalPosition
-    {
-        public int row;
-        public int col;
-    }
-
     struct CourserPosition
     {
         public int row; // Console.CursorTop
@@ -66,6 +58,7 @@ public class Zoo
         return _zooMap;
     }
 
+
     public void AddAnimal(IAnimal animal)
     {
         _animals.Add(animal);
@@ -74,11 +67,26 @@ public class Zoo
 
     public void AddNewAnimalType(string animalType)
     {
-        // TO-DO: Implement this function
+        if (_animalTypeMap.ContainsKey(animalType[0]))
+        {
+            Console.WriteLine($"Animal type '{animalType}' already exists.");
+            return;
+        }
+
+        Type factoryType = Type.GetType($"{animalType}Factory");
+        if (factoryType == null)
+        {
+            Console.WriteLine($"Factory for animal type '{animalType}' not found.");
+            return;
+        }
+
+        IAnimalFactory factory = (IAnimalFactory)Activator.CreateInstance(factoryType);
+        IAnimal animal = factory.CreateAnimal(animalType);
+        _animalTypeMap.Add(animalType[0], animal);
     }
 
 
-    public void GenerateAnimals(string animalType, int count)
+    /*public void GenerateAnimals(string animalType, int count)
     {
         IAnimalFactory factory;
         switch (animalType.ToLower())
@@ -100,6 +108,33 @@ public class Zoo
             IAnimal animal = factory.CreateAnimal($"{animalType} {i + 1}");
             //AddAnimal(animal);
             //PlaceAnimal(animal);
+            if (PlaceAnimal2(animal) == 1)
+            {
+                Console.WriteLine($"The {animal.Name} couldn't be placed.");
+            }
+            else
+            {
+                AddAnimal(animal);
+                numOfSucessfulPlacements++;
+            }
+        }
+        Console.WriteLine($"{numOfSucessfulPlacements} out of {count} {animalType}s were placed in the zoo.");
+    }*/
+
+
+    public void GenerateAnimals(string animalType, int count)
+    {
+        if (!_animalTypeMap.ContainsKey(animalType[0]))
+        {
+            Console.WriteLine($"Unknown animal type: {animalType}");
+            return;
+        }
+
+        IAnimalFactory factory = (IAnimalFactory)Activator.CreateInstance(Type.GetType($"{animalType}Factory"));
+        int numOfSucessfulPlacements = 0;
+        for (int i = 0; i < count; i++)
+        {
+            IAnimal animal = factory.CreateAnimal($"{animalType} {i + 1}");
             if (PlaceAnimal2(animal) == 1)
             {
                 Console.WriteLine($"The {animal.Name} couldn't be placed.");
@@ -178,61 +213,33 @@ public class Zoo
             var (currentRow, currentCol) = _animalPositions[animal];
             bool moved = false;
 
-            // Attempt to move the animal in a random direction (up, down, left, right)
-            // Try each direction until a valid move is found or all directions are exhausted
-            //var directions = new List<(int, int)> { (-1, 0), (1, 0), (0, -1), (0, 1) }; // Up, Down, Left, Right
             var directions = new List<Tuple<int, int>>(animal.MoveDirections);
-            int newRow = -1, newCol = -1;
             while (directions.Count > 0 && !moved)
             {
                 int index = rnd.Next(directions.Count);
                 var (dirRow, dirCol) = directions[index];
-                directions.RemoveAt(index); // Remove the attempted direction
+                directions.RemoveAt(index);
 
-                newRow = currentRow + dirRow * AnimalMatrixSize;
-                newCol = currentCol + dirCol * AnimalMatrixSize;
+                int newRow = currentRow + dirRow * AnimalMatrixSize;
+                int newCol = currentCol + dirCol * AnimalMatrixSize;
 
-                // Check if the new position is within bounds and the 2x2 area is empty
                 if (newRow >= 0 && newRow <= _zooMap.Length - AnimalMatrixSize &&
-                    newCol >= 0 && newCol <= _zooMap[0].Length - AnimalMatrixSize)
+                    newCol >= 0 && newCol <= _zooMap[0].Length - AnimalMatrixSize &&
+                    CheckIfEmpty(newRow, newCol))
                 {
-                    bool areaIsEmpty = CheckIfEmpty(newRow, newCol);
-
-                    if (areaIsEmpty)
-                    {
-                        // Clear the current position
-                        ClearAnimalPosition(animal, currentRow, currentCol);
-                        // Move the animal to the new position
-                        InsertAnimal(animal, newRow, newCol);
-
-                        moved = true;
-                    }
+                    ClearAnimalPosition(animal, currentRow, currentCol);
+                    InsertAnimal(animal, newRow, newCol);
+                    UpdateRowAndColArrays(currentRow, currentCol, newRow, newCol);
+                    UpdateSpecificCellsAfterAnimalMove2(currentRow, currentCol, newRow, newCol);
+                    moved = true;
+                    Console.SetCursorPosition(lastCourserPosition.col, lastCourserPosition.row + 9);
                 }
             }
 
             if (!moved)
             {
-                //Console.WriteLine($"The {animal.Name} couldn't move.");
                 animalCount--;
-                if (animalCount == 0)
-                {
-                    //Console.WriteLine("All animals are stuck and can't move.");
-                    return;
-                }
-            }
-            else
-            {
-                if (newRow != -1 || newCol != -1)
-                {
-                    //Console.WriteLine($"({currentRow}, {currentCol}) => ({newRow}, {newCol}).");
-                    UpdateRowAndColArrays(currentRow, currentCol, newRow, newCol);
-                    //UpdateSpecificCellsAfterAnimalMove(currentRow, currentCol, newRow, newCol);
-                    UpdateSpecificCellsAfterAnimalMove2(currentRow, currentCol, newRow, newCol);
-
-                    Console.SetCursorPosition(lastCourserPosition.col, lastCourserPosition.row+9);
-                }
-                // Optionally, call the animal's Move method to print the moving message
-                //animal.Move();
+                if (animalCount == 0) return;
             }
         }
     }
@@ -425,19 +432,17 @@ public class Zoo
     /// //////////////////// MoveAllAnimals Helper Functions //////////////////////////
     public bool CheckIfEmpty(int row, int col)
     {
-        bool areaIsEmpty = true;
-        for (int i = 0; i < AnimalMatrixSize && areaIsEmpty; i++)
+        for (int i = 0; i < AnimalMatrixSize; i++)
         {
             for (int j = 0; j < AnimalMatrixSize; j++)
             {
                 if (_zooMap[row + i][col + j] != ' ')
                 {
-                    areaIsEmpty = false;
-                    break;
+                    return false;
                 }
             }
         }
-        return areaIsEmpty;
+        return true;
     }
 
     public void ClearAnimalPosition(IAnimal animal, int row, int col)
@@ -484,28 +489,16 @@ public class Zoo
     /////////////////////////////////////// Helper Functions ///////////////////////////////////////
     public ConsoleColor GetAnimalForegroundColor(char animalChar)
     {
-        if (_animalTypeMap.ContainsKey(animalChar))
-        {
-            return _animalTypeMap[animalChar].AnimalForegroundColor;
-        }
-        return ConsoleColor.Gray;
+        return _animalTypeMap.ContainsKey(animalChar) ? _animalTypeMap[animalChar].AnimalForegroundColor : ConsoleColor.Gray;
     }
 
     public ConsoleColor GetAnimalBackgroundColor(char animalChar)
     {
-        if (_animalTypeMap.ContainsKey(animalChar))
-        {
-            return _animalTypeMap[animalChar].AnimalBackgroundColor;
-        }
-        return ConsoleColor.Black;
+        return _animalTypeMap.ContainsKey(animalChar) ? _animalTypeMap[animalChar].AnimalBackgroundColor : ConsoleColor.Black;
     }
 
     public char GetMappedAnimalChar(char animalChar)
     {
-        if (_animalTypeMap.ContainsKey(animalChar))
-        {
-            return animalChar;
-        }
-        return '.';
+        return _animalTypeMap.ContainsKey(animalChar) ? animalChar : '.';
     }
 }
