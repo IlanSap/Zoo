@@ -22,17 +22,14 @@ class Program
 
         while (true)
         {
-            // TO_DO: Make the options dynamic (for example add option to add new animal types to the zoo)
-            //Console.WriteLine("Choose Option: \n1. Add Lion \n2. Add Monkey \n3. Move All Animals  \n4. Generate Animals \n5. Start Moving Animals Timer \n6. EXIT");
-
             Console.WriteLine("Zoo Managment System");
             Console.WriteLine("1. Add Lion");
             Console.WriteLine("2. Add Monkey");
-            Console.WriteLine("3. Add new type of animal");
-            Console.WriteLine("4. Move All Animals");
-            Console.WriteLine("5. Generate Animals");
-            Console.WriteLine("6. Start Moving Animals Timer");
-            Console.WriteLine("7. EXIT");
+            Console.WriteLine("3. Move All Animals");
+            Console.WriteLine("4. Generate Animals");
+            Console.WriteLine("5. Start Moving Animals Timer");
+            Console.WriteLine("6. EXIT");
+            //Console.WriteLine("_. Add new type of animal");
             Console.Write("Select an option: ");
             if (!int.TryParse(Console.ReadLine(), out int option))
             {
@@ -43,65 +40,25 @@ class Program
             switch (option)
             {
                 case 1:
-                    IAnimalFactory lionFactory = new LionFactory();
-                    IAnimal lion = lionFactory.CreateAnimal("Simba");
-                    zoo.AddAnimal(lion);
-                    zoo.PlaceAnimal2(lion);
-                    zoo.PlotZoo();
+                    AddAnimalToZoo(zoo, new LionFactory(), 'L');
                     continue;
                 case 2:
-                    IAnimalFactory monkeyFactory = new MonkeyFactory();
-                    IAnimal monkey = monkeyFactory.CreateAnimal("Kofiko");
-                    zoo.AddAnimal(monkey);
-                    zoo.PlaceAnimal2(monkey);
-                    zoo.PlotZoo();
+                    AddAnimalToZoo(zoo, new MonkeyFactory(), 'M');
                     continue;
+/*              case 3:
+                    AddNewAnimalTypeToZoo(zoo);
+                    continue;*/
                 case 3:
-                    Console.WriteLine("Enter animal type:");
-                    string newAnimalType = Console.ReadLine();
-                    if (string.IsNullOrEmpty(newAnimalType))
-                    {
-                        Console.WriteLine("Invalid input for animal type. Please enter a non-empty string.");
-                        continue;
-                    }
-                    zoo.AddNewAnimalType(newAnimalType);
-                    Console.WriteLine($"New animal type '{newAnimalType}' added to the zoo.");
-                    continue;
-                case 4:
                     zoo.MoveAllAnimals();
                     zoo.PlotZoo();
                     continue;
+                case 4:
+                    GenerateAnimalsInZoo(zoo);
+                    continue;
                 case 5:
-                    Console.WriteLine("Enter animal type (Lion/Monkey):");
-                    string animalType = Console.ReadLine();
-                    Console.WriteLine("Enter number of animals to generate:");
-                    if (!int.TryParse(Console.ReadLine(), out int count) || count <= 0)
-                    {
-                        Console.WriteLine("Invalid input for number of animals. Please enter a positive integer.");
-                        continue;
-                    }
-                    zoo.GenerateAnimals(animalType, count);
-                    zoo.PlotZoo();
+                    StartMoveAnimalsTimer(zoo, ref moveAnimalsTimer);
                     continue;
                 case 6:
-                    if (moveAnimalsTimer == null)
-                    {
-                        Console.WriteLine("Enter the interval for moving animals (in seconds):");
-                        if (!int.TryParse(Console.ReadLine(), out int intervalSeconds) || intervalSeconds <= 0)
-                        {
-                            Console.WriteLine("Invalid input for interval. Please enter a positive integer.");
-                            continue;
-                        }
-                        Console.Clear(); // Clear the console to remove the previous zoo map
-                        zoo.PlotZoo();
-                        moveAnimalsTimer = InitializeTimer(zoo, intervalSeconds);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Timer is already running.");
-                    }
-                    continue;
-                case 7:
                     moveAnimalsTimer?.Dispose();
                     Environment.Exit(0);
                     break;
@@ -112,10 +69,59 @@ class Program
         }
     }
 
+
+    static void AddAnimalToZoo(Zoo zoo, IAnimalFactory factory, char animalChar)
+    {
+        IAnimal animal = factory.CreateAnimal(animalChar.ToString());
+        zoo.AddAnimal(animal);
+        zoo.PlaceAnimal2(animal);
+        zoo.PlotZoo();
+    }
+
+
+    static void GenerateAnimalsInZoo(Zoo zoo)
+    {
+        Console.WriteLine("Enter animal type (Lion/Monkey):");
+        string animalType = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(animalType) ||
+                (animalType != "Lion" && animalType != "Monkey"))
+        {
+            Console.WriteLine("Invalid input for animal type. Please enter 'Lion' or 'Monkey'.");
+            return;
+        }
+        Console.WriteLine("Enter number of animals to generate:");
+        if (!int.TryParse(Console.ReadLine(), out int count) || count <= 0)
+        {
+            Console.WriteLine("Invalid input for number of animals. Please enter a positive integer.");
+            return;
+        }
+        zoo.GenerateAnimals(animalType, count);
+        zoo.PlotZoo();
+    }
+
+    static void StartMoveAnimalsTimer(Zoo zoo, ref System.Threading.Timer moveAnimalsTimer)
+    {
+        if (moveAnimalsTimer == null)
+        {
+            Console.WriteLine("Enter the interval for moving animals (in seconds):");
+            if (!int.TryParse(Console.ReadLine(), out int intervalSeconds) || intervalSeconds <= 0)
+            {
+                Console.WriteLine("Invalid input for interval. Please enter a positive integer.");
+                return;
+            }
+            Console.Clear();
+            zoo.PlotZoo();
+            moveAnimalsTimer = InitializeTimer(zoo, intervalSeconds);
+        }
+        else
+        {
+            Console.WriteLine("Timer is already running.");
+        }
+    }
+
     static System.Threading.Timer InitializeTimer(Zoo zoo, int intervalSeconds)
     {
         return new System.Threading.Timer(
-            //callback: _ => MoveAnimalsEvent(zoo),
             callback: _ => MoveAnimalsEvent(zoo),
             state: null,
             dueTime: TimeSpan.FromSeconds(intervalSeconds), // Time to wait before the first execution
@@ -123,202 +129,24 @@ class Program
         );
     }
 
+
     static void MoveAnimalsEvent(Zoo zoo)
     {
-        //Console.Clear(); // Clear the console to remove the previous zoo map
         zoo.MoveAllAnimals();
-        //zoo.PlotZoo();
         //Console.WriteLine("Animals moved automatically.");
     }
-}
 
 
-// Old Version of Program.cs, using SingletonZoo instead of Zoo
-/*
-class Program
-{
-    static void Main(string[] args)
-    {
-        Console.WriteLine("Enter Zoo Size:");
-        int zooSize = Convert.ToInt32(Console.ReadLine());
-        SingletonZoo singletonZoo = SingletonZoo.Instance;
-        singletonZoo.SetZooSize(zooSize);
-
-        System.Threading.Timer moveAnimalsTimer = null; // Declare the timer but don't initialize it yet
-
-        while (true)
+    /*    static void AddNewAnimalTypeToZoo(Zoo zoo)
         {
-            Console.WriteLine("Choose Option: \n1. Add Lion \n2. Add Monkey \n3. Move All Animals  \n4. Generate Animals \n5. Start Moving Animals Timer \n6. EXIT");
-            int option = Convert.ToInt32(Console.ReadLine());
-            switch (option)
+            Console.WriteLine("Enter animal type:");
+            string newAnimalType = Console.ReadLine();
+            if (string.IsNullOrEmpty(newAnimalType))
             {
-                case 1:
-                    IAnimalFactory lionFactory = new LionFactory();
-                    IAnimal lion = lionFactory.CreateAnimal("Simba");
-                    singletonZoo.AddAnimal(lion);
-                    //singletonZoo.PlaceAnimal(lion);
-                    singletonZoo.PlaceAnimal2(lion);
-                    singletonZoo.PlotZoo();
-                    continue;
-                case 2:
-                    IAnimalFactory monkeyFactory = new MonkeyFactory();
-                    IAnimal monkey = monkeyFactory.CreateAnimal("George");
-                    singletonZoo.AddAnimal(monkey);
-                    //singletonZoo.PlaceAnimal(monkey);
-                    singletonZoo.PlaceAnimal2(monkey);
-                    singletonZoo.PlotZoo();
-                    continue;
-                case 3:
-                    singletonZoo.MoveAllAnimals();
-                    singletonZoo.PlotZoo();
-                    continue;
-                case 4:
-                    Console.WriteLine("Enter animal type (Lion/Monkey):");
-                    string animalType = Console.ReadLine();
-                    Console.WriteLine("Enter number of animals to generate:");
-                    int count = Convert.ToInt32(Console.ReadLine());
-                    singletonZoo.GenerateAnimals(animalType, count);
-                    singletonZoo.PlotZoo();
-                    continue;
-                case 5:
-                    if (moveAnimalsTimer == null)
-                    {
-                        Console.WriteLine("Enter the interval for moving animals (in seconds):");
-                        int intervalSeconds = Convert.ToInt32(Console.ReadLine());
-                        moveAnimalsTimer = InitializeTimer(singletonZoo, intervalSeconds);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Timer is already running.");
-                    }
-                    continue;
-                case 6:
-                    moveAnimalsTimer?.Dispose();
-                    Environment.Exit(0);
-                    break;
-                default:
-                    Console.WriteLine("Invalid Option");
-                    continue;
+                Console.WriteLine("Invalid input for animal type. Please enter a non-empty string.");
+                continue;
             }
-        }
-    }
-
-    static System.Threading.Timer InitializeTimer(SingletonZoo zoo, int intervalSeconds)
-    {
-        return new System.Threading.Timer(
-            callback: _ => MoveAnimalsEvent(zoo),
-            state: null,
-            dueTime: TimeSpan.FromSeconds(intervalSeconds), // Time to wait before the first execution
-            period: TimeSpan.FromSeconds(intervalSeconds) // Time to wait between executions
-        );
-    }
-
-    static void MoveAnimalsEvent(SingletonZoo zoo)
-    {
-        Console.Clear(); // Clear the console to remove the previous zoo map
-        zoo.MoveAllAnimals();
-        zoo.PlotZoo();
-        Console.WriteLine("Animals moved automatically.");
-    }
+            zoo.AddNewAnimalType(newAnimalType);
+            Console.WriteLine($"New animal type '{newAnimalType}' added to the zoo.");
+        }*/
 }
-*/
-
-
-/*
-class Program
-{
-    static void Main(string[] args)
-    {
-        Console.WriteLine("Enter Zoo Size:");
-        int zooSize = Convert.ToInt32(Console.ReadLine());
-        Zoo zoo = new Zoo(); // Directly instantiate the Zoo class
-        zoo.SetZooSize(zooSize);
-
-        System.Threading.Timer moveAnimalsTimer = null; // Declare the timer but don't initialize it yet
-
-        while (true)
-        {
-            Console.WriteLine("Choose Option: \n1. Add Lion \n2. Add Monkey \n3. Move All Animals  \n4. Generate Animals \n5. Start Moving Animals Timer \n6. EXIT");
-            int option = Convert.ToInt32(Console.ReadLine());
-
-
-            switch (option)
-            {
-                case 1:
-                    IAnimalFactory lionFactory = new LionFactory();
-                    IAnimal lion = lionFactory.CreateAnimal("Simba");
-                    zoo.AddAnimal(lion);
-                    //zoo.PlaceAnimal(lion);
-                    zoo.PlaceAnimal2(lion);
-                    zoo.PlotZoo();
-                    continue;
-                case 2:
-                    IAnimalFactory monkeyFactory = new MonkeyFactory();
-                    IAnimal monkey = monkeyFactory.CreateAnimal("George");
-                    zoo.AddAnimal(monkey);
-                    //zoo.PlaceAnimal(monkey);
-                    zoo.PlaceAnimal2(monkey);
-                    zoo.PlotZoo();
-                    continue;
-                case 3:
-                    zoo.MoveAllAnimals();
-                    zoo.PlotZoo();
-                    //zoo.PlotZoo2();
-                    continue;
-                case 4:
-                    Console.WriteLine("Enter animal type (Lion/Monkey):");
-                    string animalType = Console.ReadLine();
-                    Console.WriteLine("Enter number of animals to generate:");
-                    int count = Convert.ToInt32(Console.ReadLine());
-                    zoo.GenerateAnimals(animalType, count);
-                    zoo.PlotZoo();
-                    //zoo.PlotZoo2();
-                    
-
-                    //ZooPlotForm zooPlotForm = new ZooPlotForm(zoo.getZooMap());
-                    //zooPlotForm.Show();
-                    continue;
-                case 5:
-                    if (moveAnimalsTimer == null)
-                    {
-                        Console.WriteLine("Enter the interval for moving animals (in seconds):");
-                        int intervalSeconds = Convert.ToInt32(Console.ReadLine());
-                        moveAnimalsTimer = InitializeTimer(zoo, intervalSeconds);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Timer is already running.");
-                    }
-                    continue;
-                case 6:
-                    moveAnimalsTimer?.Dispose();
-                    Environment.Exit(0);
-                    break;
-                default:
-                    Console.WriteLine("Invalid Option");
-                    continue;
-            }
-        }
-    }
-
-    static System.Threading.Timer InitializeTimer(Zoo zoo, int intervalSeconds)
-    {
-        return new System.Threading.Timer(
-            callback: _ => MoveAnimalsEvent(zoo),
-            state: null,
-            dueTime: TimeSpan.FromSeconds(intervalSeconds), // Time to wait before the first execution
-            period: TimeSpan.FromSeconds(intervalSeconds) // Time to wait between executions
-        );
-    }
-
-    static void MoveAnimalsEvent(Zoo zoo)
-    {
-        Console.Clear(); // Clear the console to remove the previous zoo map
-        zoo.MoveAllAnimals();
-        zoo.PlotZoo();
-        //zoo.PlotZoo2();
-        Console.WriteLine("Animals moved automatically.");
-    }
-}
-*/
-

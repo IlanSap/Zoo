@@ -65,63 +65,6 @@ public class Zoo
     }
 
 
-    public void AddNewAnimalType(string animalType)
-    {
-        if (_animalTypeMap.ContainsKey(animalType[0]))
-        {
-            Console.WriteLine($"Animal type '{animalType}' already exists.");
-            return;
-        }
-
-        Type factoryType = Type.GetType($"{animalType}Factory");
-        if (factoryType == null)
-        {
-            Console.WriteLine($"Factory for animal type '{animalType}' not found.");
-            return;
-        }
-
-        IAnimalFactory factory = (IAnimalFactory)Activator.CreateInstance(factoryType);
-        IAnimal animal = factory.CreateAnimal(animalType);
-        _animalTypeMap.Add(animalType[0], animal);
-    }
-
-
-    /*public void GenerateAnimals(string animalType, int count)
-    {
-        IAnimalFactory factory;
-        switch (animalType.ToLower())
-        {
-            case "lion":
-                factory = new LionFactory();
-                break;
-            case "monkey":
-                factory = new MonkeyFactory();
-                break;
-            default:
-                Console.WriteLine($"Unknown animal type: {animalType}");
-                return;
-        }
-
-        int numOfSucessfulPlacements = 0;
-        for (int i = 0; i < count; i++)
-        {
-            IAnimal animal = factory.CreateAnimal($"{animalType} {i + 1}");
-            //AddAnimal(animal);
-            //PlaceAnimal(animal);
-            if (PlaceAnimal2(animal) == 1)
-            {
-                Console.WriteLine($"The {animal.Name} couldn't be placed.");
-            }
-            else
-            {
-                AddAnimal(animal);
-                numOfSucessfulPlacements++;
-            }
-        }
-        Console.WriteLine($"{numOfSucessfulPlacements} out of {count} {animalType}s were placed in the zoo.");
-    }*/
-
-
     public void GenerateAnimals(string animalType, int count)
     {
         if (!_animalTypeMap.ContainsKey(animalType[0]))
@@ -149,8 +92,7 @@ public class Zoo
     }
 
 
-    // TO-DO: Understand the algorithm and improve it, try to think about an implementation in O(n) time complexity
-    public int PlaceAnimal2(IAnimal animal)
+    /*public int PlaceAnimal2(IAnimal animal)
     {
         int rowLength = _zooMap.Length;
         int colLength = _zooMap[0].Length;
@@ -183,24 +125,36 @@ public class Zoo
             }
         }
         return 1;
-    }
+    }*/
 
-    // TO_DO: Delete this function
-    // Print the row and col arrays, useful for debugging
-    public void PrintRowAndColArrays()
+
+    public int PlaceAnimal2(IAnimal animal)
     {
-        Console.WriteLine("Row Array:");
-        for (int i = 0; i < zooRow.Length; i++)
+        int rowLength = _zooMap.Length;
+        int colLength = _zooMap[0].Length;
+        for (int r = 0; r < rowLength - 1; r++)
         {
-            Console.Write(zooRow[i] + " ");
+            for (int c = 0; c < colLength - 1; c++)
+            {
+                if (CheckIfEmpty(r, c))
+                {
+                    for (int i = 0; i < AnimalMatrixSize; i++)
+                    {
+                        for (int j = 0; j < AnimalMatrixSize; j++)
+                        {
+                            _zooMap[r + i][c + j] = animal.getName()[0];
+                        }
+                    }
+                    _animalPositions[animal] = (r, c);
+                    zooRow[r] += 2;
+                    zooRow[r + 1] += 2;
+                    zooCol[c] += 2;
+                    zooCol[c + 1] += 2;
+                    return 0;
+                }
+            }
         }
-        Console.WriteLine();
-        Console.WriteLine("Col Array:");
-        for (int i = 0; i < zooCol.Length; i++)
-        {
-            Console.Write(zooCol[i] + " ");
-        }
-        Console.WriteLine();
+        return 1;
     }
 
 
@@ -279,11 +233,6 @@ public class Zoo
 
             for (int j = 0; j < _zooMap[i].Length; j++)
             {
-                //if (i == 0 && j == 0)
-                //{
-                //    CoursorLeft = Console.CursorLeft;
-                //    CoursorTop = Console.CursorTop;
-                //}
                 _zooCourserPositions[i][j] = new CourserPosition { row = Console.CursorTop, col = Console.CursorLeft };
                 // Set text and background color based on the animal type
                 char animalChar = _zooMap[i][j];
@@ -330,13 +279,13 @@ public class Zoo
     public void UpdateSpecificCellsAfterAnimalMove2(int oldRow, int oldCol, int newRow, int newCol)
     {
         // Clear the old position
-        ClearSpecificCells2(oldRow, oldCol);
+        ClearSpecificCells(oldRow, oldCol);
 
         // Update the new position
-        UpdateSpecificCells2(newRow, newCol);
+        UpdateSpecificCells(newRow, newCol);
     }
 
-    public void ClearSpecificCells2(int row, int col)
+    public void ClearSpecificCells(int row, int col)
     {
         for (int i = 0; i < AnimalMatrixSize; i++)
         {
@@ -352,7 +301,7 @@ public class Zoo
         }
     }
     
-    public void UpdateSpecificCells2(int row, int col)
+    public void UpdateSpecificCells(int row, int col)
     {
         char animalChar = _zooMap[row][col];
         ConsoleColor foregroundColor, backgroundColor;
@@ -377,59 +326,9 @@ public class Zoo
         }
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// Version without using additional array to store the console positions, but not working properly
-    public void UpdateSpecificCellsAfterAnimalMove(int oldRow, int oldCol, int newRow, int newCol)
-    {
-        // Clear the old position
-        ClearSpecificCells(oldRow, oldCol);
 
-        // Update the new position
-        UpdateSpecificCells(newRow, newCol);
-    }
-
-    private void ClearSpecificCells(int row, int col)
-    {
-        for (int i = 0; i < AnimalMatrixSize; i++)
-        {
-            for (int j = 0; j < AnimalMatrixSize; j++)
-            {
-                int consoleRow = CoursorTop + (row + i);
-                int consoleCol = CoursorLeft + (col + j); // Each cell takes up 4 characters in width
-                Console.SetCursorPosition(consoleCol, consoleRow);
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.Write(" . "); // Clear the 2x2 space
-            }
-        }
-    }
-
-    private void UpdateSpecificCells(int row, int col)
-    {
-        char animalChar = _zooMap[row][col];
-        ConsoleColor foregroundColor, backgroundColor;
-
-        // Determine the char and colors based on the animal type
-        foregroundColor = GetAnimalForegroundColor(animalChar);
-        backgroundColor = GetAnimalBackgroundColor(animalChar);
-
-        for (int i = 0; i < AnimalMatrixSize; i++)
-        {
-            for (int j = 0; j < AnimalMatrixSize; j++)
-            {
-                int consoleRow = CoursorTop + (row + i);
-                int consoleCol = CoursorLeft + (col + j); // Each cell takes up 4 characters in width
-                Console.SetCursorPosition(consoleCol, consoleRow);
-                Console.ForegroundColor = foregroundColor;
-                Console.BackgroundColor = backgroundColor;
-                Console.Write($" {animalChar} ");
-                Console.ResetColor(); // Reset to default colors after each character
-            }
-        }
-    }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /// //////////////////// MoveAllAnimals Helper Functions //////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+    /////////////////////// MoveAllAnimals Helper Functions //////////////////////////
     public bool CheckIfEmpty(int row, int col)
     {
         for (int i = 0; i < AnimalMatrixSize; i++)
@@ -502,3 +401,97 @@ public class Zoo
         return _animalTypeMap.ContainsKey(animalChar) ? animalChar : '.';
     }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// TO_DO: Delete this function
+// Print the row and col arrays, useful for debugging
+/*    public void PrintRowAndColArrays()
+    {
+        Console.WriteLine("Row Array:");
+        for (int i = 0; i < zooRow.Length; i++)
+        {
+            Console.Write(zooRow[i] + " ");
+        }
+        Console.WriteLine();
+        Console.WriteLine("Col Array:");
+        for (int i = 0; i < zooCol.Length; i++)
+        {
+            Console.Write(zooCol[i] + " ");
+        }
+        Console.WriteLine();
+    }*/
+
+
+/*public void AddNewAnimalType(string animalType)
+{
+    if (_animalTypeMap.ContainsKey(animalType[0]))
+    {
+        Console.WriteLine($"Animal type '{animalType}' already exists.");
+        return;
+    }
+
+    Type factoryType = Type.GetType($"{animalType}Factory");
+    if (factoryType == null)
+    {
+        Console.WriteLine($"Factory for animal type '{animalType}' not found.");
+        return;
+    }
+
+    IAnimalFactory factory = (IAnimalFactory)Activator.CreateInstance(factoryType);
+    IAnimal animal = factory.CreateAnimal(animalType);
+    _animalTypeMap.Add(animalType[0], animal);
+}*/
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Version without using additional array to store the console positions, but not working properly
+/*    public void UpdateSpecificCellsAfterAnimalMove(int oldRow, int oldCol, int newRow, int newCol)
+    {
+        // Clear the old position
+        ClearSpecificCells(oldRow, oldCol);
+
+        // Update the new position
+        UpdateSpecificCells(newRow, newCol);
+    }
+
+    private void ClearSpecificCells(int row, int col)
+    {
+        for (int i = 0; i < AnimalMatrixSize; i++)
+        {
+            for (int j = 0; j < AnimalMatrixSize; j++)
+            {
+                int consoleRow = CoursorTop + (row + i);
+                int consoleCol = CoursorLeft + (col + j); // Each cell takes up 4 characters in width
+                Console.SetCursorPosition(consoleCol, consoleRow);
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write(" . "); // Clear the 2x2 space
+            }
+        }
+    }
+
+    private void UpdateSpecificCells(int row, int col)
+    {
+        char animalChar = _zooMap[row][col];
+        ConsoleColor foregroundColor, backgroundColor;
+
+        // Determine the char and colors based on the animal type
+        foregroundColor = GetAnimalForegroundColor(animalChar);
+        backgroundColor = GetAnimalBackgroundColor(animalChar);
+
+        for (int i = 0; i < AnimalMatrixSize; i++)
+        {
+            for (int j = 0; j < AnimalMatrixSize; j++)
+            {
+                int consoleRow = CoursorTop + (row + i);
+                int consoleCol = CoursorLeft + (col + j); // Each cell takes up 4 characters in width
+                Console.SetCursorPosition(consoleCol, consoleRow);
+                Console.ForegroundColor = foregroundColor;
+                Console.BackgroundColor = backgroundColor;
+                Console.Write($" {animalChar} ");
+                Console.ResetColor(); // Reset to default colors after each character
+            }
+        }
+    }*/
