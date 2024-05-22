@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 
 
+/*
+    1.There's no reason for the zoo to be a singleton.
+    2.Please utilize SOLID principles, there's no need for the zoo to do everything, think how you can break it up. (Do one thing and do it well)
+    3.I don't think that AnimalPosition belongs here, why not having it instide the animal itself?
+    4.Utilize OOP principles.
+    5.If you don't use this class delete it.
+*/
+
 public class SingletonZoo
 {
     private static SingletonZoo _instance;

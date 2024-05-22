@@ -1,5 +1,17 @@
 ﻿using System;
 
+/*
+    1.Each Animal should have it's own class.
+    2.Common logic should be placed in a base class.
+    3.We don't need the name, but that's ok if you want to keep it.
+    4.You don't even use the Move() method, it should move the animal.
+    5.I'm not sure why the MoveDirections() is not common, if you intended to make the animals move differenly, then Move() is the right place to do that.
+    You can and should change the signatures to fit your needs.
+    6.Please read about C# properties and use them.
+    7.C# naming convention is pascal case, e.g. GetName and not getName.
+    8.If the property/method logic is identical for every instance, use static or const.
+*/
+
 public class Lion : IAnimal
 {
     public string Name { get; private set; }

@@ -4,6 +4,16 @@ using static Zoo;
 
 // TO_DO: Maybe- allow user to add new animal types to the zoo
 
+/*
+    1.Program.cs is only the entry point, and should not contain any logic except for starting the application.
+    2.You should not have any commented-out code.
+    3.All the input we want from the user is zoo size and number of animal to place in the zoo, the rest is on you ;)
+    4.You don't have a single try-catch statement in the code, a lot of stuff can go wrong, and it's better anticipate and handle them accordingly.
+    5.Read about clean code.
+    6.Please avoid of having numbers in methods/function names unless it's absolutely required (in your code there's no reason to have them at all).
+    7.Avoid writing comments where it's not needed, make the code explain itself.
+*/
+
 class Program
 {
     static void Main(string[] args)

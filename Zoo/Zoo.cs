@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using System.Reflection;
 
 
+/*
+    1.Please don't use hardcoded stuff.
+    2.Why do you need both animal positions and cursor poisitions?
+    4.I readlly don't think you need all these data structures to maintain the zoo state, try to be more efficient.
+    3.CourserPosition is identical to animal position.
+    4.Please return bool for success/fail operations, there's no need to return int.
+    5.if you use this, Activator.CreateInstance(Type.GetType($"{animalType}Factory")), you don't really need factory do you?
+    6.Please use somthing like Enum, you know which animal types you have.
+*/
+
 public class Zoo
 {
     private List<IAnimal> _animals = new List<IAnimal>();
