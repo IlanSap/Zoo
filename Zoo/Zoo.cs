@@ -89,7 +89,7 @@ public class Zoo
         {
             // IAnimal animal = factory.CreateAnimal($"{animalType} {i + 1}");
             IAnimal animal = factory.CreateAnimal(type);
-            if (PlaceAnimal2(animal) == 1)
+            if (PlaceAnimal(animal) == 1)
             {
                 Console.WriteLine($"The {(animal.AnimalType).ToString()} couldn't be placed.");
             }
@@ -139,7 +139,7 @@ public class Zoo
     }*/
 
 
-    public int PlaceAnimal2(IAnimal animal)
+    public int PlaceAnimal(IAnimal animal)
     {
         int rowLength = _zooMap.Length;
         int colLength = _zooMap[0].Length;
@@ -411,6 +411,12 @@ public class Zoo
     public char GetMappedAnimalChar(char animalChar)
     {
         return _animalTypeMap.ContainsKey(animalChar) ? animalChar : '.';
+    }
+
+    public bool CanFitAnimals(int animalCount)
+    {
+        int availableSpace = (_zooMap.Length * _zooMap[0].Length) / (AnimalMatrixSize * AnimalMatrixSize);
+        return animalCount <= availableSpace;
     }
 }
 
