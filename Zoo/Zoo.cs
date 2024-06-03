@@ -15,13 +15,13 @@ public class Zoo
     private int[] zooCol;
     private int CoursorTop = 0;
     private int CoursorLeft = 0;
-    
 
+    // TO_DO: Get rid of this dictionary
     // Map Between char and animal type
     private Dictionary<char, IAnimal> _animalTypeMap = new Dictionary<char, IAnimal>
     {
-        { 'L', new Lion("Lion") },
-        { 'M', new Monkey("Monkey") }
+        { 'L', new AnimalFactory().CreateAnimal(AnimalType.Lion) },
+        { 'M', new AnimalFactory().CreateAnimal(AnimalType.Monkey) }
     };
 
 
@@ -53,11 +53,20 @@ public class Zoo
     }
 
  
-    public char[][] getZooMap()
+    public char[][] GetZooMap()
     {
         return _zooMap;
     }
 
+    public int GetAnimalMatrixSize()
+    {
+        return AnimalMatrixSize;
+    }
+
+    public (int row, int col) GetAnimalPosition(IAnimal animal)
+    {
+        return _animalPositions[animal];
+    }
 
     public void AddAnimal(IAnimal animal)
     {
@@ -65,22 +74,24 @@ public class Zoo
     }
 
 
-    public void GenerateAnimals(string animalType, int count)
+    public void GenerateAnimals(AnimalType type, int count)
     {
-        if (!_animalTypeMap.ContainsKey(animalType[0]))
+/*        if (!_animalTypeMap.ContainsKey(animalType[0]))
         {
             Console.WriteLine($"Unknown animal type: {animalType}");
             return;
-        }
+        }*/
 
-        IAnimalFactory factory = (IAnimalFactory)Activator.CreateInstance(Type.GetType($"{animalType}Factory"));
+        // IAnimalFactory factory = (IAnimalFactory)Activator.CreateInstance(Type.GetType($"{animalType}Factory"));
+        IAnimalFactory factory = new AnimalFactory();
         int numOfSucessfulPlacements = 0;
         for (int i = 0; i < count; i++)
         {
-            IAnimal animal = factory.CreateAnimal($"{animalType} {i + 1}");
+            // IAnimal animal = factory.CreateAnimal($"{animalType} {i + 1}");
+            IAnimal animal = factory.CreateAnimal(type);
             if (PlaceAnimal2(animal) == 1)
             {
-                Console.WriteLine($"The {animal.Name} couldn't be placed.");
+                Console.WriteLine($"The {(animal.AnimalType).ToString()} couldn't be placed.");
             }
             else
             {
@@ -88,7 +99,7 @@ public class Zoo
                 numOfSucessfulPlacements++;
             }
         }
-        Console.WriteLine($"{numOfSucessfulPlacements} out of {count} {animalType}s were placed in the zoo.");
+        Console.WriteLine($"{numOfSucessfulPlacements} out of {count} {type.ToString()}s were placed in the zoo.");
     }
 
 
@@ -142,7 +153,8 @@ public class Zoo
                     {
                         for (int j = 0; j < AnimalMatrixSize; j++)
                         {
-                            _zooMap[r + i][c + j] = animal.getName()[0];
+                            // _zooMap[r + i][c + j] = animal.getName()[0];
+                            _zooMap[r + i][c + j] = (animal.AnimalType).ToString()[0];
                         }
                     }
                     _animalPositions[animal] = (r, c);
@@ -361,7 +373,7 @@ public class Zoo
         {
             for (int j = 0; j < AnimalMatrixSize; j++)
             {
-                _zooMap[row + i][col + j] = animal.getName()[0]; // use the first letter of the animal's name
+                _zooMap[row + i][col + j] = (animal.AnimalType).ToString()[0]; // use the first letter of the animal's name
             }
         }
         _animalPositions[animal] = (row, col); // track the top-left position of the animal's matrix

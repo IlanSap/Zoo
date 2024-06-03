@@ -40,10 +40,10 @@ class Program
             switch (option)
             {
                 case 1:
-                    AddAnimalToZoo(zoo, new LionFactory(), 'L');
+                    AddAnimalToZoo(zoo, AnimalType.Lion);
                     continue;
                 case 2:
-                    AddAnimalToZoo(zoo, new MonkeyFactory(), 'M');
+                    AddAnimalToZoo(zoo, AnimalType.Monkey);
                     continue;
 /*              case 3:
                     AddNewAnimalTypeToZoo(zoo);
@@ -70,21 +70,22 @@ class Program
     }
 
 
-    static void AddAnimalToZoo(Zoo zoo, IAnimalFactory factory, char animalChar)
+    static void AddAnimalToZoo(Zoo zoo, AnimalType type)
     {
-        IAnimal animal = factory.CreateAnimal(animalChar.ToString());
+        IAnimalFactory factory = new AnimalFactory();
+        IAnimal animal = factory.CreateAnimal(type);
         zoo.AddAnimal(animal);
         zoo.PlaceAnimal2(animal);
         zoo.PlotZoo();
     }
 
-
+    // TO_DO: Change the Generate Animals method and the related function so they will work with the updated classes
     static void GenerateAnimalsInZoo(Zoo zoo)
     {
         Console.WriteLine("Enter animal type (Lion/Monkey):");
         string animalType = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(animalType) ||
-                (animalType != "Lion" && animalType != "Monkey"))
+                !(Enum.IsDefined(typeof(AnimalType), animalType)))
         {
             Console.WriteLine("Invalid input for animal type. Please enter 'Lion' or 'Monkey'.");
             return;
@@ -95,7 +96,8 @@ class Program
             Console.WriteLine("Invalid input for number of animals. Please enter a positive integer.");
             return;
         }
-        zoo.GenerateAnimals(animalType, count);
+        AnimalType type = (AnimalType)Enum.Parse(typeof(AnimalType), animalType);
+        zoo.GenerateAnimals(type, count);
         zoo.PlotZoo();
     }
 

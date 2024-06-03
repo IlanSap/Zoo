@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 
 
@@ -284,7 +284,7 @@ public class SingletonZoo
         zooRow[newRow] += AnimalMatrixSize;
     }
 
-    /*
+    *//*
     public void PlotZoo()
     {
         for (int i = 0; i < _zooMap.Length; i++)
@@ -296,7 +296,7 @@ public class SingletonZoo
             Console.WriteLine();
         }
     }
-    */
+    *//*
 
 
     public void PlotZoo()
@@ -360,4 +360,4 @@ public class SingletonZoo
         Console.ResetColor();
         Console.WriteLine("  - Empty space");
     }
-}
+}*/
