@@ -8,11 +8,21 @@ public class Zoo
     public List<Animal> _animals = new List<Animal>();
     public int AnimalMatrixSize = 2; // Each animal occupies a 2x2 space
     public ZooArea _zooArea;
+    public ZooPlot _zooPlot = new ZooPlot();
+    public Timer _moveAnimalsTimer;
+    public double _intervalSeconds;
     public Guid ZooId { get; }= Guid.NewGuid();
 
-    // related to the zoo plot
-    public CourserPosition[][] _zooCourserPositions;
-    public CourserPosition lastCourserPosition;
+
+
+    public Zoo(CourserPosition lastCourserPosition)
+    {
+        this._zooPlot.lastCourserPosition = lastCourserPosition;
+    }
+
+    public Zoo()
+    {
+    }
 
     public void SetZooSize(int size)
     {
@@ -97,7 +107,7 @@ public class Zoo
                 this._zooArea.ClearAnimalPosition(currentRow, currentCol);
                 this._zooArea.InsertAnimal(animal, newRow, newCol);
                 this._zooArea.UpdateRowAndColArrays(currentRow, currentCol, newRow, newCol);
-                ZooPlot.UpdateSpecificCellsAfterAnimalMove(this, currentRow, currentCol, newRow, newCol);
+                _zooPlot.UpdateSpecificCellsAfterAnimalMove(this, currentRow, currentCol, newRow, newCol);
                 moved = true;
             }
         }
@@ -113,5 +123,64 @@ public class Zoo
     {
         int availableSpace = (_zooArea._zooMap.Length * _zooArea._zooMap[0].Length) / (AnimalMatrixSize * AnimalMatrixSize);
         return animalCount <= availableSpace;
+    }
+
+
+    public Timer InitializeTimer(double intervalSeconds)
+    {
+        try
+        {
+            return new Timer(
+                callback: _ => MoveAnimalsEvent(),
+                state: null,
+                dueTime: TimeSpan.FromSeconds(intervalSeconds), // Time to wait before the first execution
+                period: TimeSpan.FromSeconds(intervalSeconds) // Time to wait between executions
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while initializing the timer: {ex.Message}");
+            return null;
+        }
+    }
+
+    // pause the timer for 20 seconds
+    public void PauseTimer()
+    {
+        try
+        {
+            _moveAnimalsTimer.Change(TimeSpan.FromSeconds(20), TimeSpan.FromMilliseconds(-1));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while pausing the timer: {ex.Message}");
+        }
+    }
+
+    // resume the timer
+    public void ResumeTimer()
+    {
+        try
+        {
+            _moveAnimalsTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(_intervalSeconds));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while resuming the timer: {ex.Message}");
+        }
+    }   
+
+
+    private void MoveAnimalsEvent()
+    {
+        try
+        {
+            this.MoveAllAnimals();
+            //Console.WriteLine("Animals moved automatically.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while moving animals: {ex.Message}");
+        }
     }
 }

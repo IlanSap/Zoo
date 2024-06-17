@@ -19,7 +19,7 @@ public abstract class Animal : IAnimal
     {
       
         bool success = moveFn.Invoke(this);
-        if (!success)
-            Console.WriteLine($"Animal {this.AnimalType.ToString()} couldn't find a place to move.");
+/*        if (!success)
+            Console.WriteLine($"Animal {this.AnimalType.ToString()} couldn't find a place to move.");*/
     }
 }

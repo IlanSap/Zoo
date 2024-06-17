@@ -37,7 +37,7 @@ public class ZooArea
         Array.Fill(zooCol, 0);
         zooRow = new int[size];
         Array.Fill(zooRow, 0);
-        _zoo._zooCourserPositions = zooCourserPositions;
+        _zoo._zooPlot._zooCourserPositions = zooCourserPositions;
     }
 
 

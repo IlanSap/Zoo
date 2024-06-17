@@ -5,16 +5,12 @@ using System.Collections.Generic;
 
 public class ZooManager
 {
-    public Zoo _zoo;
-    public Timer _moveAnimalsTimer;
+    //public Zoo _zoo;
+    public List<Zoo> _zooList = new List<Zoo>();
     public IAnimalFactory _animalFactory;
+    public ConsoleHelper _consoleHelper = new ConsoleHelper();
+    public int numberOfZoos;
 
-
-    public ZooManager(Zoo zoo, IAnimalFactory animalFactory)
-    {
-        _zoo = zoo;
-        _animalFactory = animalFactory;
-    }
 
     public ZooManager()
     {
@@ -22,18 +18,28 @@ public class ZooManager
 
     public void Run()
     {
-        ConsoleHelper.GetInputFromUser(this);
+        IAnimalFactory animalFactory = new AnimalFactory();
+        this._animalFactory = animalFactory;
+        _consoleHelper.GetInputFromUser(this);
 
         try
         {
             Console.WriteLine("Starting the Zoo Management System...");
-            StartMoveAnimalsTimer();
+            Console.Clear();
+            Console.SetBufferSize(1000,1000);
+            for (int i = 0; i < _zooList.Count; i++)
+            {
+                StartMoveAnimalsTimer(_zooList[i]);
+                if (i == _zooList.Count - 1)
+                {
+                    _zooList[i]._zooPlot.PrintInstructions();
+                }
+            }
+            
             while (true)
             {
-                Console.WriteLine("Press 'q' to quit.");
                 if (Console.ReadKey(true).Key == ConsoleKey.Q)
                 {
-                    _moveAnimalsTimer?.Dispose();
                     Environment.Exit(0);
                 }
             }
@@ -45,7 +51,7 @@ public class ZooManager
     }
 
 
-    public void GenerateRandomAnimals(int animalCount)
+    public void GenerateRandomAnimals(Zoo zoo, int animalCount)
     {
         try
         {
@@ -58,9 +64,9 @@ public class ZooManager
                 AnimalType animalType = (AnimalType)animalTypes.GetValue(random.Next(animalTypes.Length));
                 Animal animal = _animalFactory.CreateAnimal(animalType);
                 //animal.AnimalZoo = _zoo;
-                if (_zoo._zooArea.PlaceAnimal(animal) == true)
+                if (zoo._zooArea.PlaceAnimal(animal) == true)
                 {
-                    _zoo.AddAnimal(animal);
+                    zoo.AddAnimal(animal);
                     remainingAnimals--;
                 }
             }
@@ -74,20 +80,35 @@ public class ZooManager
     }
 
 
-    private void StartMoveAnimalsTimer()
+    private void StartMoveAnimalsTimer(Zoo zoo)
     {
         try
         {
-            if (_moveAnimalsTimer == null)
+            if (zoo._moveAnimalsTimer == null)
             {
-                double intervalSeconds = ConsoleHelper.GetTimeInterval();
-                if (intervalSeconds == -1)
+                double intervalSeconds = zoo._intervalSeconds;
+                if (intervalSeconds <= 0)
                 {
                     return;
                 }
-                Console.Clear();
-                ZooPlot.PlotZoo(_zoo);
-                _moveAnimalsTimer = InitializeTimer(intervalSeconds);
+
+                if (zoo == _zooList[0])
+                {
+                    zoo._zooPlot.PlotZoo(zoo,0);
+                }
+                else
+                {
+                    int len = 0;
+                    int i = 0;
+                    while (_zooList[i] != zoo)
+                    {
+                        len += _zooList[i]._zooArea._zooMap.Length + 10;
+                        i++;
+                    }
+                    zoo._zooPlot.PlotZoo(zoo, len);
+                }
+
+                zoo._moveAnimalsTimer = zoo.InitializeTimer(intervalSeconds);
             }
             else
             {
@@ -97,39 +118,6 @@ public class ZooManager
         catch (Exception ex)
         {
             Console.WriteLine($"An error occurred while starting the timer: {ex.Message}");
-        }
-    }
-
-
-    private Timer InitializeTimer(double intervalSeconds)
-    {
-        try
-        {
-            return new Timer(
-                callback: _ => MoveAnimalsEvent(),
-                state: null,
-                dueTime: TimeSpan.FromSeconds(intervalSeconds), // Time to wait before the first execution
-                period: TimeSpan.FromSeconds(intervalSeconds) // Time to wait between executions
-            );
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred while initializing the timer: {ex.Message}");
-            return null;
-        }
-    }
-
-
-    private void MoveAnimalsEvent()
-    {
-        try
-        {
-            _zoo.MoveAllAnimals();
-            //Console.WriteLine("Animals moved automatically.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred while moving animals: {ex.Message}");
         }
     }
 }

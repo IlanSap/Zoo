@@ -4,13 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public static class ZooPlot
+public class ZooPlot
 {
-    private static ConsoleColor deafultForegroundColor= ConsoleColor.Gray;
-    private static ConsoleColor deafultBackgroundColor = ConsoleColor.Black;
+    private ConsoleColor deafultForegroundColor= ConsoleColor.Gray;
+    private ConsoleColor deafultBackgroundColor = ConsoleColor.Black;
 
-    public static void PlotZoo(Zoo zoo)
+    public CourserPosition[][] _zooCourserPositions;
+    public CourserPosition lastCourserPosition;
+
+    public void PlotZoo(Zoo zoo, int len)
     {
+        // Console.SetCursorPosition(this.lastCourserPosition.col, this.lastCourserPosition.row);
+        //SetStartingCursorPosition();
+        Console.SetCursorPosition(0, len+6);
+
         // Save the original console colors to restore them later
         var originalBackgroundColor = Console.BackgroundColor;
         var originalForegroundColor = Console.ForegroundColor;
@@ -38,7 +45,7 @@ public static class ZooPlot
 
             for (int j = 0; j < zoo._zooArea._zooMap[i].Length; j++)
             {
-                zoo._zooCourserPositions[i][j] = new CourserPosition { row = Console.CursorTop, col = Console.CursorLeft };
+                this._zooCourserPositions[i][j] = new CourserPosition { row = Console.CursorTop, col = Console.CursorLeft };
                 // Set text and background color based on the animal type
                 Animal animal = zoo._zooArea._zooMap[i][j];
                 char animalChar = GetMappedAnimalChar(animal);
@@ -61,14 +68,20 @@ public static class ZooPlot
 
         PrintLegend(zoo);
 
-        zoo.lastCourserPosition = new CourserPosition { row = Console.CursorTop, col = Console.CursorLeft };
+        this.lastCourserPosition = new CourserPosition { row = Console.CursorTop, col = Console.CursorLeft };
 
         // Restore the original console colors
         Console.BackgroundColor = originalBackgroundColor;
         Console.ForegroundColor = originalForegroundColor;
     }
 
-    private static void PrintLegend(Zoo zoo)
+    public void PrintInstructions()
+    {
+        Console.WriteLine("Press 'q' to quit.");
+        Console.SetCursorPosition(0, (Console.CursorTop + 1));
+    }
+
+    private void PrintLegend(Zoo zoo)
     {
         // Print legend with colors and ASCII characters
         Console.WriteLine("Legend:");
@@ -84,13 +97,28 @@ public static class ZooPlot
             animalTypes.Add(animal.AnimalType.ToString());
             Console.ForegroundColor = animal.AnimalForegroundColor;
             Console.BackgroundColor = animal.AnimalBackgroundColor;
-            Console.WriteLine($"{animal.AnimalType.ToString()[0]} - {animal.AnimalType}");
+            Console.WriteLine($"{animal.AnimalType.ToString()[0]} = {animal.AnimalType}");
         }
         Console.ResetColor();
         Console.WriteLine(" . - Empty space");
     }
 
-    public static void UpdateSpecificCellsAfterAnimalMove(Zoo zoo, int oldRow, int oldCol, int newRow, int newCol)
+
+    private void SetStartingCursorPosition()
+    {
+        if (lastCourserPosition != null)
+        {
+            int newStartRow = lastCourserPosition.row + 3; // Add some space between plots
+            Console.SetCursorPosition(0, newStartRow);
+        }
+        else
+        {
+            Console.SetCursorPosition(0, 0);
+        }
+    }
+
+
+    public void UpdateSpecificCellsAfterAnimalMove(Zoo zoo, int oldRow, int oldCol, int newRow, int newCol)
     {
         // Clear the old position
         ClearSpecificCells(zoo, oldRow, oldCol);
@@ -98,17 +126,17 @@ public static class ZooPlot
         // Update the new position
         UpdateSpecificCells(zoo, newRow, newCol);
 
-        Console.SetCursorPosition(zoo.lastCourserPosition.col, zoo.lastCourserPosition.row);
+        //Console.SetCursorPosition(this.lastCourserPosition.col, this.lastCourserPosition.row);
     }
 
-    private static void ClearSpecificCells(Zoo zoo, int row, int col)
+    private void ClearSpecificCells(Zoo zoo, int row, int col)
     {
         for (int i = 0; i < zoo.AnimalMatrixSize; i++)
         {
             for (int j = 0; j < zoo.AnimalMatrixSize; j++)
             {
-                int consoleRow = zoo._zooCourserPositions[row + i][col + j].row;
-                int consoleCol = zoo._zooCourserPositions[row + i][col + j].col;
+                int consoleRow = this._zooCourserPositions[row + i][col + j].row;
+                int consoleCol = this._zooCourserPositions[row + i][col + j].col;
                 Console.SetCursorPosition(consoleCol, consoleRow);
                 Console.ForegroundColor = deafultForegroundColor;
                 Console.BackgroundColor = deafultBackgroundColor;
@@ -117,7 +145,7 @@ public static class ZooPlot
         }
     }
 
-    private static void UpdateSpecificCells(Zoo zoo, int row, int col)
+    private void UpdateSpecificCells(Zoo zoo, int row, int col)
     {
         Animal animal = zoo._zooArea._zooMap[row][col];
         char animalChar = GetMappedAnimalChar(animal);
@@ -128,8 +156,8 @@ public static class ZooPlot
         {
             for (int j = 0; j < zoo.AnimalMatrixSize; j++)
             {
-                int consoleRow = zoo._zooCourserPositions[row + i][col + j].row;
-                int consoleCol = zoo._zooCourserPositions[row + i][col + j].col;
+                int consoleRow = this._zooCourserPositions[row + i][col + j].row;
+                int consoleCol = this._zooCourserPositions[row + i][col + j].col;
                 Console.SetCursorPosition(consoleCol, consoleRow);
                 Console.ForegroundColor = foregroundColor;
                 Console.BackgroundColor = backgroundColor;
@@ -141,17 +169,17 @@ public static class ZooPlot
 
     /////////////////////////////////////// Helper Functions ///////////////////////////////////////
 
-    private static char GetMappedAnimalChar(Animal animal)
+    private char GetMappedAnimalChar(Animal animal)
     {
         return animal == null ? '.' : animal.AnimalType.ToString()[0];
     }
 
-    private static ConsoleColor GetAnimalForegroundColor(Animal animal) 
+    private ConsoleColor GetAnimalForegroundColor(Animal animal) 
     {
         return animal == null ? deafultForegroundColor : animal.AnimalForegroundColor;
     }
 
-    private static ConsoleColor GetAnimalBackgroundColor(Animal animal)
+    private ConsoleColor GetAnimalBackgroundColor(Animal animal)
     {
         return animal == null ? deafultBackgroundColor : animal.AnimalBackgroundColor;
     }
