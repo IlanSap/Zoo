@@ -15,11 +15,10 @@ public abstract class Animal : IAnimal
 
     public abstract AnimalType AnimalType { get; }
 
-    public void Move()
+    public void Move(Func<Animal, bool> moveFn)
     {
-        var _zoo = GPSTracker.GetZoo(AnimalId);
-        Func<Animal, bool> moveFunc = _zoo.MoveAnimal;
-        bool success = moveFunc(this);
+      
+         bool success = moveFn.Invoke(this);
         if (!success)
             Console.WriteLine($"Animal {this.AnimalType.ToString()} couldn't find a place to move.");
     }

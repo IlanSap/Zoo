@@ -56,9 +56,10 @@ public class Zoo
 
     public void MoveAllAnimals()
     {
+         
         foreach (var animal in _animals)
         {
-            animal.Move();
+            animal.Move(MoveAnimal);
         }
     }
 

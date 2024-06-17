@@ -9,6 +9,6 @@
 
     public AnimalType AnimalType { get; }
 
-    public void Move();
+    public void Move(Func<Animal, bool> moveFn);
 }
 
