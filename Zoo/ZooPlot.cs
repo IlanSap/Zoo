@@ -84,8 +84,10 @@ public static class ZooPlot
             animalTypes.Add(animal.AnimalType.ToString());
             Console.ForegroundColor = animal.AnimalForegroundColor;
             Console.BackgroundColor = animal.AnimalBackgroundColor;
-            Console.WriteLine($"{animal.AnimalType}");
+            Console.WriteLine($"{animal.AnimalType.ToString()[0]} - {animal.AnimalType}");
         }
+        Console.ResetColor();
+        Console.WriteLine(" . - Empty space");
     }
 
     public static void UpdateSpecificCellsAfterAnimalMove(Zoo zoo, int oldRow, int oldCol, int newRow, int newCol)
