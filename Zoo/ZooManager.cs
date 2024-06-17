@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 public class ZooManager
 {
-    //public Zoo _zoo;
     public List<Zoo> _zooList = new List<Zoo>();
     public IAnimalFactory _animalFactory;
     public ConsoleHelper _consoleHelper = new ConsoleHelper();
@@ -63,7 +62,6 @@ public class ZooManager
             {
                 AnimalType animalType = (AnimalType)animalTypes.GetValue(random.Next(animalTypes.Length));
                 Animal animal = _animalFactory.CreateAnimal(animalType);
-                //animal.AnimalZoo = _zoo;
                 if (zoo._zooArea.PlaceAnimal(animal) == true)
                 {
                     zoo.AddAnimal(animal);
@@ -98,14 +96,14 @@ public class ZooManager
                 }
                 else
                 {
-                    int len = 0;
-                    int i = 0;
-                    while (_zooList[i] != zoo)
+                    int startRow = 0;
+                    for (int i = 0; i < _zooList.Count; i++)
                     {
-                        len += _zooList[i]._zooArea._zooMap.Length + 10;
-                        i++;
+                        if (_zooList[i] == zoo)
+                            break;
+                        startRow += (int) (_zooList[i]._zooArea._zooMap.Length * 1.5);
                     }
-                    zoo._zooPlot.PlotZoo(zoo, len);
+                    zoo._zooPlot.PlotZoo(zoo, startRow);
                 }
 
                 zoo._moveAnimalsTimer = zoo.InitializeTimer(intervalSeconds);

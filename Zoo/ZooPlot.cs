@@ -12,11 +12,9 @@ public class ZooPlot
     public CourserPosition[][] _zooCourserPositions;
     public CourserPosition lastCourserPosition;
 
-    public void PlotZoo(Zoo zoo, int len)
+    public void PlotZoo(Zoo zoo, int startRow)
     {
-        // Console.SetCursorPosition(this.lastCourserPosition.col, this.lastCourserPosition.row);
-        //SetStartingCursorPosition();
-        Console.SetCursorPosition(0, len+6);
+        Console.SetCursorPosition(0, startRow);
 
         // Save the original console colors to restore them later
         var originalBackgroundColor = Console.BackgroundColor;
@@ -75,11 +73,14 @@ public class ZooPlot
         Console.ForegroundColor = originalForegroundColor;
     }
 
+
     public void PrintInstructions()
     {
+        Console.WriteLine();
         Console.WriteLine("Press 'q' to quit.");
         Console.SetCursorPosition(0, (Console.CursorTop + 1));
     }
+
 
     private void PrintLegend(Zoo zoo)
     {
@@ -104,20 +105,6 @@ public class ZooPlot
     }
 
 
-    private void SetStartingCursorPosition()
-    {
-        if (lastCourserPosition != null)
-        {
-            int newStartRow = lastCourserPosition.row + 3; // Add some space between plots
-            Console.SetCursorPosition(0, newStartRow);
-        }
-        else
-        {
-            Console.SetCursorPosition(0, 0);
-        }
-    }
-
-
     public void UpdateSpecificCellsAfterAnimalMove(Zoo zoo, int oldRow, int oldCol, int newRow, int newCol)
     {
         // Clear the old position
@@ -128,6 +115,7 @@ public class ZooPlot
 
         //Console.SetCursorPosition(this.lastCourserPosition.col, this.lastCourserPosition.row);
     }
+    
 
     private void ClearSpecificCells(Zoo zoo, int row, int col)
     {
@@ -144,6 +132,7 @@ public class ZooPlot
             }
         }
     }
+
 
     private void UpdateSpecificCells(Zoo zoo, int row, int col)
     {
