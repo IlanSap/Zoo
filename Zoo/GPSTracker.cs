@@ -8,41 +8,8 @@ public static class GPSTracker
 {
     public static Dictionary<Guid, AnimalPosition> animalPositions = new Dictionary<Guid, AnimalPosition>();
 
-    public static Dictionary<Guid, Zoo> animalZoos = new Dictionary<Guid, Zoo>();
+    //public static Dictionary<Guid, Zoo> animalZoos = new Dictionary<Guid, Zoo>();
 
-    
-    /// //////////////////////////////////////////////////////////////////
-    public static void AddOrUpdateZoo(Guid animalId, Zoo zoo)
-    {
-        if (animalZoos.ContainsKey(animalId))
-        {
-            animalZoos[animalId] = zoo;
-        }
-        else
-        {
-            animalZoos.Add(animalId, zoo);
-        }
-    }
-
-    public static Zoo GetZoo(Guid animalId)
-    {
-        if (animalZoos.ContainsKey(animalId))
-        {
-            return animalZoos[animalId];
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public static void RemoveZoo(Guid animalId)
-    {
-        if (animalZoos.ContainsKey(animalId))
-        {
-            animalZoos.Remove(animalId);
-        }
-    }
 
     /// //////////////////////////////////////////////////////////////////
 
@@ -77,4 +44,38 @@ public static class GPSTracker
             animalPositions.Remove(animalId);
         }
     }
+
+
+    /// //////////////////////////////////////////////////////////////////
+    /*public static void AddOrUpdateZoo(Guid animalId, Zoo zoo)
+    {
+        if (animalZoos.ContainsKey(animalId))
+        {
+            animalZoos[animalId] = zoo;
+        }
+        else
+        {
+            animalZoos.Add(animalId, zoo);
+        }
+    }
+
+    public static Zoo GetZoo(Guid animalId)
+    {
+        if (animalZoos.ContainsKey(animalId))
+        {
+            return animalZoos[animalId];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static void RemoveZoo(Guid animalId)
+    {
+        if (animalZoos.ContainsKey(animalId))
+        {
+            animalZoos.Remove(animalId);
+        }
+    }*/
 }

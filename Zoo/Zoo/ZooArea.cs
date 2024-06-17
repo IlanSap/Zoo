@@ -60,7 +60,7 @@ public class ZooArea
                     }
                     //animal.AnimalPosition = (r, c);
                     GPSTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(r,c));
-                    GPSTracker.AddOrUpdateZoo(animal.AnimalId, this._zoo);
+                    // GPSTracker.AddOrUpdateZoo(animal.AnimalId, this._zoo);
                     for (int i = 0; i < AnimalMatrixSize; i++)
                     {
                         zooRow[r + i] += AnimalMatrixSize;
