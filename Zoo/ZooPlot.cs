@@ -73,29 +73,19 @@ public static class ZooPlot
         // Print legend with colors and ASCII characters
         Console.WriteLine("Legend:");
 
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.BackgroundColor = ConsoleColor.Yellow;
-        Console.WriteLine(" L - Lion");
-
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.BackgroundColor = ConsoleColor.DarkGreen;
-        Console.WriteLine(" M - Monkey");
-
-        Console.ForegroundColor = ConsoleColor.Black;
-        Console.BackgroundColor = ConsoleColor.DarkGray;
-        Console.WriteLine(" E - Elephant");
-
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.BackgroundColor = ConsoleColor.DarkBlue;
-        Console.WriteLine(" P - Penguin");
-
-        Console.ForegroundColor = ConsoleColor.Black;
-        Console.BackgroundColor = ConsoleColor.White;
-        Console.WriteLine(" Z - Zebra");
-
-        Console.ResetColor();
-        Console.WriteLine(" . - Empty space");
-        Console.WriteLine();
+        HashSet<string> animalTypes = new HashSet<string>();
+        foreach (var animal in zoo._animals)
+        {
+            // check if animal is already in the legend
+            if (animalTypes.Contains(animal.AnimalType.ToString()))
+            {
+                continue;
+            }
+            animalTypes.Add(animal.AnimalType.ToString());
+            Console.ForegroundColor = animal.AnimalForegroundColor;
+            Console.BackgroundColor = animal.AnimalBackgroundColor;
+            Console.WriteLine($"{animal.AnimalType}");
+        }
     }
 
     public static void UpdateSpecificCellsAfterAnimalMove(Zoo zoo, int oldRow, int oldCol, int newRow, int newCol)

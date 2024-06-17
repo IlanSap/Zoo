@@ -5,7 +5,7 @@ using System.Reflection;
 
 public class Zoo
 {
-    private List<Animal> _animals = new List<Animal>();
+    public List<Animal> _animals = new List<Animal>();
     public int AnimalMatrixSize = 2; // Each animal occupies a 2x2 space
     public ZooArea _zooArea;
     public Guid ZooId { get; }= Guid.NewGuid();
@@ -56,9 +56,10 @@ public class Zoo
 
     public void MoveAllAnimals()
     {
+         
         foreach (var animal in _animals)
         {
-            animal.Move();
+            animal.Move(MoveAnimal);
         }
     }
 
