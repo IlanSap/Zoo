@@ -65,7 +65,7 @@ public class ZooManager
                 }
             }
 
-            ZooPlot.PlotZoo(_zoo);
+            //ZooPlot.PlotZoo(_zoo);
         }
         catch (Exception ex)
         {
