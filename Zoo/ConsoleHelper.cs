@@ -34,8 +34,6 @@ public class ConsoleHelper
         try
         {
             Console.WriteLine("Enter Zoo Size:");
-            /*if (zooManager._zooList.Count > 0)
-                zooManager._zooList[zooManager._zooList.Count - 1]._zooPlot.lastCourserPosition.row++;*/
 
             if (!int.TryParse(Console.ReadLine(), out int zooSize) || zooSize <= 0)
             {
@@ -44,8 +42,6 @@ public class ConsoleHelper
             }
 
             Console.WriteLine("Enter number of animals to place in the zoo:");
-            if (zooManager._zooList.Count > 0)
-                zooManager._zooList[zooManager._zooList.Count - 1]._zooPlot.lastCourserPosition.row++;
             
             if (!int.TryParse(Console.ReadLine(), out int animalCount) || animalCount <= 0)
             {
@@ -53,9 +49,6 @@ public class ConsoleHelper
                 return;
             }
 
-            /* Zoo zoo = zooManager._zooList.Count == 0
-                 ? new Zoo()
-                 : new Zoo(zooManager._zooList[zooManager._zooList.Count - 1]._zooPlot.lastCourserPosition);*/
             Zoo zoo = new Zoo();
 
 

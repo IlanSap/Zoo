@@ -9,8 +9,8 @@ public class ZooPlot
     private ConsoleColor deafultForegroundColor = ConsoleColor.Gray;
     private ConsoleColor deafultBackgroundColor = ConsoleColor.Black;
 
-    public CourserPosition[][] _zooCourserPositions;
-    public CourserPosition lastCourserPosition;
+    //public CourserPosition[][] _zooCourserPositions;
+    //public CourserPosition lastCourserPosition;
 
     public int startRow;
     public int endRow;
@@ -116,7 +116,7 @@ public class ZooPlot
                 Console.WriteLine();
             }*/
 
-            this.lastCourserPosition = new CourserPosition { row = Console.CursorTop, col = Console.CursorTop };
+            //this.lastCourserPosition = new CourserPosition { row = Console.CursorTop, col = Console.CursorTop };
 
             // Restore the original console colors
             Console.BackgroundColor = originalBackgroundColor;
