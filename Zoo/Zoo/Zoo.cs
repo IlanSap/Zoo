@@ -15,10 +15,10 @@ public class Zoo
 
 
 
-    public Zoo(CourserPosition lastCourserPosition)
+    /*public Zoo(CourserPosition lastCourserPosition)
     {
         this._zooPlot.lastCourserPosition = lastCourserPosition;
-    }
+    }*/
 
     public Zoo()
     {
@@ -72,6 +72,7 @@ public class Zoo
             animal.Move(MoveAnimal);
         }
     }
+
 
     public bool MoveAnimal(Animal animal)
     {
@@ -144,32 +145,6 @@ public class Zoo
         }
     }
 
-    // pause the timer for 20 seconds
-    public void PauseTimer()
-    {
-        try
-        {
-            _moveAnimalsTimer.Change(TimeSpan.FromSeconds(20), TimeSpan.FromMilliseconds(-1));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred while pausing the timer: {ex.Message}");
-        }
-    }
-
-    // resume the timer
-    public void ResumeTimer()
-    {
-        try
-        {
-            _moveAnimalsTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(_intervalSeconds));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred while resuming the timer: {ex.Message}");
-        }
-    }   
-
 
     private void MoveAnimalsEvent()
     {
@@ -182,5 +157,26 @@ public class Zoo
         {
             Console.WriteLine($"An error occurred while moving animals: {ex.Message}");
         }
+    }
+
+    // override == operator
+    public static bool operator ==(Zoo zoo1, Zoo zoo2)
+    {
+        if (ReferenceEquals(zoo1, zoo2))
+        {
+            return true;
+        }
+
+        if (ReferenceEquals(zoo1, null) || ReferenceEquals(zoo2, null))
+        {
+            return false;
+        }
+        return zoo1.ZooId == zoo2.ZooId;
+    }
+
+    // override != operator
+    public static bool operator !=(Zoo zoo1, Zoo zoo2)
+    {
+        return !(zoo1 == zoo2);
     }
 }

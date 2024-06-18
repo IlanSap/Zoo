@@ -46,18 +46,18 @@ public class ConsoleHelper
             Console.WriteLine("Enter number of animals to place in the zoo:");
             if (zooManager._zooList.Count > 0)
                 zooManager._zooList[zooManager._zooList.Count - 1]._zooPlot.lastCourserPosition.row++;
-            //Console.SetCursorPosition(0, (Console.CursorTop + 1));
+            
             if (!int.TryParse(Console.ReadLine(), out int animalCount) || animalCount <= 0)
             {
                 Console.WriteLine("Invalid input for number of animals. Please enter a positive integer.");
                 return;
             }
 
-            Zoo zoo = zooManager._zooList.Count == 0
-                ? new Zoo()
-                : new Zoo(zooManager._zooList[zooManager._zooList.Count - 1]._zooPlot.lastCourserPosition);
+            /* Zoo zoo = zooManager._zooList.Count == 0
+                 ? new Zoo()
+                 : new Zoo(zooManager._zooList[zooManager._zooList.Count - 1]._zooPlot.lastCourserPosition);*/
+            Zoo zoo = new Zoo();
 
-            //zooManager._zoo = zoo;
 
             zooManager._zooList.Add(zoo);
             zoo.SetZooSize(zooSize);

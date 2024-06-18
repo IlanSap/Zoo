@@ -22,22 +22,22 @@ public class ZooArea
     public void SetZooSize(int size)
     {
         _zooMap = new Animal[size][];
-        CourserPosition[][] zooCourserPositions = new CourserPosition[size][];
+        //CourserPosition[][] zooCourserPositions = new CourserPosition[size][];
 
         for (int i = 0; i < size; i++)
         {
             _zooMap[i] = new Animal[size];
             Array.Fill(_zooMap[i], null); // fill the array with spaces indicating empty spaces.
 
-            zooCourserPositions[i] = new CourserPosition[size]; // Initialize the inner array
-            Array.Fill(zooCourserPositions[i], new CourserPosition { row = 0, col = 0 });
+            //zooCourserPositions[i] = new CourserPosition[size]; // Initialize the inner array
+            //Array.Fill(zooCourserPositions[i], new CourserPosition { row = 0, col = 0 });
 
         }
         zooCol = new int[size];
         Array.Fill(zooCol, 0);
         zooRow = new int[size];
         Array.Fill(zooRow, 0);
-        _zoo._zooPlot._zooCourserPositions = zooCourserPositions;
+        //_zoo._zooPlot._zooCourserPositions = zooCourserPositions;
     }
 
 
