@@ -4,32 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class ZooPlot
-{
+public class ZooPlot {
     private ConsoleColor deafultForegroundColor = ConsoleColor.Gray;
     private ConsoleColor deafultBackgroundColor = ConsoleColor.Black;
 
-    public CourserPosition[][] _zooCourserPositions;
-    public CourserPosition lastCourserPosition;
 
     public int startRow;
     public int endRow;
 
     // Convert zoo cell to console cell
-    public CourserPosition ConvertZooCellToConsoleCell(int row, int col, int startRow)
-    {
-        int newRow = startRow + row*1 + 2;
-        int newCol = col*3 + 5;
-        return new CourserPosition { row = newRow, col = newCol };
+    public Point ConvertZooCellToConsoleCell(int row, int col, int startRow) {
+        int newRow = startRow + row * 1 + 2;
+        int newCol = col * 3 + 5;
+        return new Point {X = newRow, Y = newCol};
     }
 
-    public void PlotZoo(Zoo zoo, int startRow, int zooNumber)
-    {
-        try
-        {
-            if (startRow < 0)
-            {
-                throw new ArgumentOutOfRangeException("startRow", "The startRow parameter must be a non-negative integer.");
+    public void PlotZoo(Zoo zoo, int startRow) {
+        try {
+            if (startRow < 0) {
+                throw new ArgumentOutOfRangeException("startRow",
+                    "The startRow parameter must be a non-negative integer.");
             }
 
             // Print _zooCourserPositions for debugging
@@ -55,8 +49,7 @@ public class ZooPlot
 
             // Print column indicators with improved spacing
             Console.Write("    "); // Space for row indicators
-            for (int col = 0; col < zoo._zooArea._zooMap[0].Length; col++)
-            {
+            for (int col = 0; col < zoo._zooArea._zooMap[0].Length; col++) {
                 Console.Write($"{col % 100,2} "); // Use modulo for double-digit numbers, with padding for alignment
             }
 
@@ -64,20 +57,17 @@ public class ZooPlot
 
             // Print top border with improved visibility
             Console.Write("   +"); // Align with row indicators
-            for (int col = 0; col < zoo._zooArea._zooMap[0].Length; col++)
-            {
+            for (int col = 0; col < zoo._zooArea._zooMap[0].Length; col++) {
                 Console.Write("---");
             }
 
             Console.WriteLine("+");
 
-            for (int i = 0; i < zoo._zooArea._zooMap.Length; i++)
-            {
+            for (int i = 0; i < zoo._zooArea._zooMap.Length; i++) {
                 // Print row indicator with padding for alignment
                 Console.Write($"{i % 100,3} |"); // Use modulo for double-digit numbers
 
-                for (int j = 0; j < zoo._zooArea._zooMap[i].Length; j++)
-                {
+                for (int j = 0; j < zoo._zooArea._zooMap[i].Length; j++) {
 /*                    this._zooCourserPositions[i][j] = new CourserPosition
                     { row = Console.CursorTop, col = Console.CursorLeft };*/
 
@@ -96,8 +86,7 @@ public class ZooPlot
 
             // Print bottom border
             Console.Write("   +"); // Align with row indicators
-            for (int col = 0; col < zoo._zooArea._zooMap[0].Length; col++)
-            {
+            for (int col = 0; col < zoo._zooArea._zooMap[0].Length; col++) {
                 Console.Write("---");
             }
 
@@ -116,7 +105,6 @@ public class ZooPlot
                 Console.WriteLine();
             }*/
 
-            this.lastCourserPosition = new CourserPosition { row = Console.CursorTop, col = Console.CursorTop };
 
             // Restore the original console colors
             Console.BackgroundColor = originalBackgroundColor;
@@ -130,17 +118,13 @@ public class ZooPlot
             // Print the startRow
             Console.WriteLine("StartRow: " + startRow);
             Console.WriteLine("LastRow: " + lastRow);*/
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Console.WriteLine($"An error occurred while plotting the zoo: {ex.Message}");
         }
     }
 
 
-
-    public void PrintInstructions()
-    {
+    public void PrintInstructions() {
         Console.WriteLine();
         Console.WriteLine();
         Console.WriteLine("Press 'q' to quit.");
@@ -148,57 +132,49 @@ public class ZooPlot
     }
 
     // Print Legend for every Zoo
-    private void PrintLegend(Zoo zoo)
-    {
+    private void PrintLegend(Zoo zoo) {
         // Print legend with colors and ASCII characters
         Console.WriteLine("Legend:");
 
         HashSet<string> animalTypes = new HashSet<string>();
-        foreach (var animal in zoo._animals)
-        {
+        foreach (var animal in zoo._animals) {
             // check if animal is already in the legend
-            if (animalTypes.Contains(animal.AnimalType.ToString()))
-            {
+            if (animalTypes.Contains(animal.AnimalType.ToString())) {
                 continue;
             }
+
             animalTypes.Add(animal.AnimalType.ToString());
             Console.ForegroundColor = animal.AnimalForegroundColor;
             Console.BackgroundColor = animal.AnimalBackgroundColor;
             Console.WriteLine($"{animal.AnimalType.ToString()[0]} = {animal.AnimalType}");
         }
+
         Console.ResetColor();
         Console.WriteLine(" . - Empty space");
     }
 
     // Print Legend for all Zoos
-    public void PrintOneLegend(List<Zoo> zoos)
-    {
+    public void PrintOneLegend(List<Zoo> zoos) {
         // Print legend with colors and ASCII characters
         Console.WriteLine("Legend:");
 
-        HashSet<string> animalTypes = new HashSet<string>();
-        foreach (var zoo in zoos)
-        {
-            foreach (var animal in zoo._animals)
-            {
-                // check if animal is already in the legend
-                if (animalTypes.Contains(animal.AnimalType.ToString()))
-                {
-                    continue;
-                }
-                animalTypes.Add(animal.AnimalType.ToString());
-                Console.ForegroundColor = animal.AnimalForegroundColor;
-                Console.BackgroundColor = animal.AnimalBackgroundColor;
-                Console.WriteLine($"{animal.AnimalType.ToString()[0]} = {animal.AnimalType}");
-            }
-        }
+        
+        zoos.SelectMany(z => z._animals)
+            .DistinctBy(z => z.AnimalType)
+            .ToList()
+            .ForEach(a => {
+                Console.ForegroundColor = a.AnimalForegroundColor;
+                Console.BackgroundColor = a.AnimalBackgroundColor;
+                Console.WriteLine($"{a.AnimalType.ToString()[0]} = {a.AnimalType}");
+            });
+
+
         Console.ResetColor();
         Console.WriteLine(" . - Empty space");
     }
 
 
-    public void UpdateSpecificCellsAfterAnimalMove(Zoo zoo, int oldRow, int oldCol, int newRow, int newCol)
-    {
+    public void UpdateSpecificCellsAfterAnimalMove(Zoo zoo, int oldRow, int oldCol, int newRow, int newCol) {
         // Clear the old position
         ClearSpecificCells(zoo, oldRow, oldCol);
 
@@ -226,14 +202,11 @@ public class ZooPlot
         }*/
 
 
-    private void ClearSpecificCells(Zoo zoo, int row, int col)
-    {
-        for (int i = 0; i < zoo.AnimalMatrixSize; i++)
-        {
-            for (int j = 0; j < zoo.AnimalMatrixSize; j++)
-            {
-                CourserPosition position = ConvertZooCellToConsoleCell(row + i, col + j, zoo._zooPlot.startRow);
-                Console.SetCursorPosition(position.col, position.row);
+    private void ClearSpecificCells(Zoo zoo, int row, int col) {
+        for (int i = 0; i < zoo.AnimalMatrixSize; i++) {
+            for (int j = 0; j < zoo.AnimalMatrixSize; j++) {
+                Point position = ConvertZooCellToConsoleCell(row + i, col + j, zoo._zooPlot.startRow);
+                Console.SetCursorPosition(position.X, position.Y);
                 Console.ForegroundColor = deafultForegroundColor;
                 Console.BackgroundColor = deafultBackgroundColor;
                 Console.Write(" . "); // Clear the 2x2 space
@@ -265,19 +238,16 @@ public class ZooPlot
     }*/
 
 
-    private void UpdateSpecificCells(Zoo zoo, int row, int col)
-    {
+    private void UpdateSpecificCells(Zoo zoo, int row, int col) {
         Animal animal = zoo._zooArea._zooMap[row][col];
         char animalChar = GetMappedAnimalChar(animal);
         ConsoleColor foregroundColor = GetAnimalForegroundColor(animal);
         ConsoleColor backgroundColor = GetAnimalBackgroundColor(animal);
 
-        for (int i = 0; i < zoo.AnimalMatrixSize; i++)
-        {
-            for (int j = 0; j < zoo.AnimalMatrixSize; j++)
-            {
-                CourserPosition position = ConvertZooCellToConsoleCell(row + i, col + j, zoo._zooPlot.startRow);
-                Console.SetCursorPosition(position.col, position.row);
+        for (int i = 0; i < zoo.AnimalMatrixSize; i++) {
+            for (int j = 0; j < zoo.AnimalMatrixSize; j++) {
+                Point position = ConvertZooCellToConsoleCell(row + i, col + j, zoo._zooPlot.startRow);
+                Console.SetCursorPosition(position.X, position.Y);
                 Console.ForegroundColor = foregroundColor;
                 Console.BackgroundColor = backgroundColor;
                 Console.Write($" {animalChar} ");
@@ -288,18 +258,15 @@ public class ZooPlot
 
     /////////////////////////////////////// Helper Functions ///////////////////////////////////////
 
-    private char GetMappedAnimalChar(Animal animal)
-    {
+    private char GetMappedAnimalChar(Animal animal) {
         return animal == null ? '.' : animal.AnimalType.ToString()[0];
     }
 
-    private ConsoleColor GetAnimalForegroundColor(Animal animal)
-    {
+    private ConsoleColor GetAnimalForegroundColor(Animal animal) {
         return animal == null ? deafultForegroundColor : animal.AnimalForegroundColor;
     }
 
-    private ConsoleColor GetAnimalBackgroundColor(Animal animal)
-    {
+    private ConsoleColor GetAnimalBackgroundColor(Animal animal) {
         return animal == null ? deafultBackgroundColor : animal.AnimalBackgroundColor;
     }
 }
