@@ -21,17 +21,19 @@ public class GPSTracker
         }
     }
 
+
     public AnimalPosition GetPosition(Guid animalId)
     {
-        if (animalPositions.ContainsKey(animalId))
+        if (animalPositions.TryGetValue(animalId, out AnimalPosition value))
         {
-            return animalPositions[animalId];
+            return value;
         }
         else
         {
             return new AnimalPosition(-1, -1);
         }
     }
+
 
     public void RemovePosition(Guid animalId)
     {

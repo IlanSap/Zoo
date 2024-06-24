@@ -1,15 +1,9 @@
 ﻿using System;
 
-public struct AnimalPosition
+public struct AnimalPosition(int x, int y)
 {
-    public int Row { get; set; }
-    public int Col { get; set; }
-
-    public AnimalPosition(int x, int y)
-    {
-        Row = x;
-        Col = y;
-    }
+    public int Row { get; set; } = x;
+    public int Col { get; set; } = y;
 
     public (int, int) ToTuple() => (Row, Col);
 

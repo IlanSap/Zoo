@@ -18,8 +18,6 @@ public class ConsoleHelper
     public int GetZooSize()
     {
         Console.WriteLine("Enter Zoo Size:");
-        /*if (zooManager._zooList.Count > 0)
-            zooManager._zooList[zooManager._zooList.Count - 1]._zooPlot.lastCourserPosition.row++;*/
 
         if (!int.TryParse(Console.ReadLine(), out int zooSize) || zooSize <= 0)
         {

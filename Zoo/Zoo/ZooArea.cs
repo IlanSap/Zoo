@@ -12,7 +12,8 @@ public class ZooArea
     private int[] zooCol;
     public int AnimalMatrixSize = 2; // Each animal occupies a 2x2 space
 
-    protected readonly GPSTracker _gpsTracker; //NEW
+    protected readonly GPSTracker _gpsTracker;
+
 
     public ZooArea(Zoo zoo, int size, GPSTracker gpsTracker)
     {
@@ -25,22 +26,17 @@ public class ZooArea
     public void SetZooSize(int size)
     {
         _zooMap = new Animal[size][];
-        //CourserPosition[][] zooCourserPositions = new CourserPosition[size][];
 
         for (int i = 0; i < size; i++)
         {
             _zooMap[i] = new Animal[size];
             Array.Fill(_zooMap[i], null); // fill the array with spaces indicating empty spaces.
-
-            //zooCourserPositions[i] = new CourserPosition[size]; // Initialize the inner array
-            //Array.Fill(zooCourserPositions[i], new CourserPosition { row = 0, col = 0 });
-
         }
+
         zooCol = new int[size];
         Array.Fill(zooCol, 0);
         zooRow = new int[size];
         Array.Fill(zooRow, 0);
-        //_zoo._zooPlot._zooCourserPositions = zooCourserPositions;
     }
 
 
@@ -61,9 +57,8 @@ public class ZooArea
                             _zooMap[r + i][c + j] = animal;
                         }
                     }
-                    //animal.AnimalPosition = (r, c);
                     _gpsTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(r,c));
-                    // GPSTracker.AddOrUpdateZoo(animal.AnimalId, this._zoo);
+
                     for (int i = 0; i < AnimalMatrixSize; i++)
                     {
                         zooRow[r + i] += AnimalMatrixSize;
@@ -112,6 +107,7 @@ public class ZooArea
         return true;
     }
 
+
     public virtual void ClearAnimalPosition(Animal animal, int row, int col)
     {
         for (int i = 0; i < AnimalMatrixSize; i++)
@@ -123,6 +119,7 @@ public class ZooArea
         }
     }
 
+
     public virtual void InsertAnimal(Animal animal, int row, int col)
     {
         for (int i = 0; i < AnimalMatrixSize; i++)
@@ -132,9 +129,9 @@ public class ZooArea
                 _zooMap[row + i][col + j] = animal;
             }
         }
-        //animal.AnimalPosition = (row, col); 
         _gpsTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(row, col)); // track the top-left position of the animal's matrix
     }
+
 
     public virtual void UpdateSpecificCellsAfterAnimalMove(Animal animal, ZooArea zooArea, int oldRow, int oldCol, int newRow, int newCol)
     {

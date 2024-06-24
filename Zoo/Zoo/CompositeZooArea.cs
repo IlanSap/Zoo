@@ -13,15 +13,8 @@ public class CompositeZooArea : ZooArea
     public Dictionary<AnimalType, ZooArea> _areas= new Dictionary<AnimalType, ZooArea>();
     public Dictionary<ZooArea, int> _areaStartRow = new Dictionary<ZooArea, int>();
 
-    public CompositeZooArea(Zoo zoo, int size, GPSTracker gpsTracker, ZooPlot zooPlot) : base(zoo, size, gpsTracker)
-    {
-        this.zooPlot = zooPlot;
-    }
 
-    public ZooArea GetZooArea(Animal animal)
-    {
-        return _areas[animal.AnimalType];
-    }
+    public CompositeZooArea(Zoo zoo, int size, GPSTracker gpsTracker, ZooPlot zooPlot) : base(zoo, size, gpsTracker) => this.zooPlot = zooPlot;
 
 
     public void PlotAreas()
@@ -112,6 +105,4 @@ public class CompositeZooArea : ZooArea
 
         //Console.SetCursorPosition(this.lastCourserPosition.col, this.lastCourserPosition.row);
     }
-
-
 }

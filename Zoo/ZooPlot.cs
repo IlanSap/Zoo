@@ -9,7 +9,6 @@ public class ZooPlot
     private ConsoleColor deafultForegroundColor = ConsoleColor.Gray;
     private ConsoleColor deafultBackgroundColor = ConsoleColor.Black;
 
-    //public CourserPosition[][] _zooCourserPositions;
 
     public int zooStartRow;
     public int endRow;
@@ -31,22 +30,9 @@ public class ZooPlot
                 throw new ArgumentOutOfRangeException("startRow", "The zooStartRow parameter must be a non-negative integer.");
             }
 
-            // Print _zooCourserPositions for debugging
-            /*Console.WriteLine("Zoo Courser Positions:");
-            foreach (var row in _zooCourserPositions)
-            {
-                foreach (var col in row)
-                {
-                    Console.Write($"({col.row}, {col.col}) ");
-                }
-                Console.WriteLine();
-            }*/
-
             int lastRow = 0;
 
-
             Console.SetCursorPosition(0, startRow);
-            //Console.WriteLine($"Zoo #{zooNumber + 1}:");
 
             // Save the original console colors to restore them later
             var originalBackgroundColor = Console.BackgroundColor;
@@ -77,9 +63,6 @@ public class ZooPlot
 
                 for (int j = 0; j < zooArea._zooMap[i].Length; j++)
                 {
-/*                    this._zooCourserPositions[i][j] = new CourserPosition
-                    { row = Console.CursorTop, col = Console.CursorLeft };*/
-
                     lastRow = Console.CursorTop;
                     Animal animal = zooArea._zooMap[i][j];
                     char animalChar = GetMappedAnimalChar(animal);
@@ -104,38 +87,15 @@ public class ZooPlot
 
             //PrintLegend(zoo);
 
-            // Print _zooCourserPositions for debugging
-            /*Console.WriteLine("Zoo Courser Positions:");
-            foreach (var row in _zooCourserPositions)
-            {
-                foreach (var col in row)
-                {
-                    Console.Write($"({col.row}, {col.col}) ");
-                }
-                Console.WriteLine();
-            }*/
-
-            //this.lastCourserPosition = new CourserPosition { row = Console.CursorTop, col = Console.CursorTop };
-
             // Restore the original console colors
             Console.BackgroundColor = originalBackgroundColor;
             Console.ForegroundColor = originalForegroundColor;
-
-            // Used for debugging
-/*            // Print the zoo size
-            Console.WriteLine("Zoo size: " + zoo._zooArea._zooMap.Length);
-            // Print the CourserPosition
-            Console.WriteLine("CourserPosition: " + Console.CursorTop + " " + Console.CursorTop);
-            // Print the zooStartRow
-            Console.WriteLine("StartRow: " + zooStartRow);
-            Console.WriteLine("LastRow: " + lastRow);*/
         }
         catch (Exception ex)
         {
             Console.WriteLine($"An error occurred while plotting the zoo: {ex.Message}");
         }
     }
-
 
 
     public void PrintInstructions()
@@ -145,6 +105,7 @@ public class ZooPlot
         Console.WriteLine("Press 'q' to quit.");
         Console.SetCursorPosition(0, (Console.CursorTop + 1));
     }
+
 
     // Print Legend for every Zoo
     private void PrintLegend(Zoo zoo)
@@ -168,6 +129,7 @@ public class ZooPlot
         Console.ResetColor();
         Console.WriteLine(" . - Empty space");
     }
+
 
     // Print Legend for all Zoos
     public void PrintOneLegend(List<Zoo> zoos)

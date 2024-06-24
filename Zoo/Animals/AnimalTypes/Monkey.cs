@@ -6,5 +6,4 @@ public class Monkey : Animal
     public override ConsoleColor AnimalBackgroundColor { get; set; } = ConsoleColor.Green;
     public override ConsoleColor AnimalForegroundColor { get; set; } = ConsoleColor.White;
     public override AnimalType AnimalType { get; } = AnimalType.Monkey;
-
 }
