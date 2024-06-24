@@ -9,26 +9,31 @@ public class Zoo
     public int AnimalMatrixSize = 2; // Each animal occupies a 2x2 space
     public ZooArea _zooArea;
     public ZooPlot _zooPlot = new ZooPlot();
-    public Timer _moveAnimalsTimer;
+    private Timer _moveAnimalsTimer;
     public double _intervalSeconds;
     public Guid ZooId { get; }= Guid.NewGuid();
 
+    private readonly GPSTracker _gpsTracker;
 
-
-    /*public Zoo(CourserPosition lastCourserPosition)
-    {
-        this._zooPlot.lastCourserPosition = lastCourserPosition;
-    }*/
 
     public Zoo()
     {
     }
 
-    public void SetZooSize(int size)
+    public Zoo(GPSTracker gpsTracker)
     {
-        _zooArea = new ZooArea(this, size);
+        _gpsTracker = gpsTracker;
     }
 
+    public void SetZooSize(int size)
+    {
+        _zooArea = new ZooArea(this, size, _gpsTracker);
+    }
+
+    public void SetZooSizeComposite(int size)
+    {
+        _zooArea = new CompositeZooArea(this, size, _gpsTracker, _zooPlot);
+    }
 
     public int GetAnimalMatrixSize()
     {
@@ -89,7 +94,7 @@ public class Zoo
         {
             directions[i] = new Tuple<int, int>(directions[i].Item1 * animal.StepSize, directions[i].Item2 * animal.StepSize);
         }
-        var (currentRow, currentCol) = GPSTracker.GetPosition(animal.AnimalId);
+        var (currentRow, currentCol) = _gpsTracker.GetPosition(animal.AnimalId);
         bool moved = false;
 
         while (directions.Count > 0 && !moved)
@@ -101,14 +106,52 @@ public class Zoo
             int newRow = currentRow + dirRow * this.GetAnimalMatrixSize();
             int newCol = currentCol + dirCol * this.GetAnimalMatrixSize();
 
-            if (newRow >= 0 && newRow <= this._zooArea._zooMap.Length - this.GetAnimalMatrixSize() &&
-                newCol >= 0 && newCol <= this._zooArea._zooMap[0].Length - this.GetAnimalMatrixSize() &&
-                this._zooArea.CheckIfEmpty(newRow, newCol))
+            /*// Add debug logging
+            Console.WriteLine($"Trying to move animal {animal.AnimalType} from ({currentRow},{currentCol}) to ({newRow},{newCol})");*/
+
+            ZooArea zooArea = _zooArea;
+
+            if (_zooArea is CompositeZooArea _compositeZooArea)
             {
-                this._zooArea.ClearAnimalPosition(currentRow, currentCol);
-                this._zooArea.InsertAnimal(animal, newRow, newCol);
-                this._zooArea.UpdateRowAndColArrays(currentRow, currentCol, newRow, newCol);
-                _zooPlot.UpdateSpecificCellsAfterAnimalMove(this, currentRow, currentCol, newRow, newCol);
+                /*currentRow = currentRow + compositeZooArea._areaStartRow[compositeZooArea._areas[animal.AnimalType]];
+                newRow = newRow + compositeZooArea._areaStartRow[compositeZooArea._areas[animal.AnimalType]];*/
+                //Console.WriteLine($"{animal.AnimalType} new row: {newRow}");
+
+                zooArea = _compositeZooArea._areas[animal.AnimalType];
+            }
+
+
+            if (newRow >= 0 && newRow <= zooArea._zooMap.Length - this.GetAnimalMatrixSize() &&
+                newCol >= 0 && newCol <= zooArea._zooMap[0].Length - this.GetAnimalMatrixSize() &&
+                zooArea.CheckIfEmpty(animal, newRow, newCol))
+            {
+                zooArea.ClearAnimalPosition(animal, currentRow, currentCol);
+                zooArea.InsertAnimal(animal, newRow, newCol);
+                zooArea.UpdateRowAndColArrays(animal, currentRow, currentCol, newRow, newCol);
+                //_zooPlot.UpdateSpecificCellsAfterAnimalMove(this, currentRow, currentCol, newRow, newCol);
+
+                /*if (_zooArea is CompositeZooArea compositeZooArea)
+                {
+                    currentRow= currentRow + compositeZooArea._areaStartRow[compositeZooArea._areas[animal.AnimalType]];
+                    newRow= newRow + compositeZooArea._areaStartRow[compositeZooArea._areas[animal.AnimalType]];
+                    Console.WriteLine($"{animal.AnimalType} new row: {newRow}");
+                }*/
+
+                /*                // Add debug logging
+                                Console.WriteLine($"Trying to move animal {animal.AnimalType} from ({currentRow},{currentCol}) to ({newRow},{newCol})");*/
+
+                if (zooArea is CompositeZooArea compositeZooArea)
+                {
+                    currentRow = currentRow + compositeZooArea._areaStartRow[compositeZooArea._areas[animal.AnimalType]];
+                    newRow = newRow + compositeZooArea._areaStartRow[compositeZooArea._areas[animal.AnimalType]];
+                    //Console.WriteLine($"{animal.AnimalType} new row: {newRow}");
+
+                    //_zooArea = compositeZooArea._areas[animal.AnimalType];
+                }
+
+                //_zooPlot.UpdateSpecificCellsAfterAnimalMove(this, currentRow, currentCol, newRow, newCol);
+                _zooArea.UpdateSpecificCellsAfterAnimalMove(animal, zooArea, currentRow, currentCol, newRow, newCol);
+
                 moved = true;
             }
         }
@@ -127,22 +170,14 @@ public class Zoo
     }
 
 
-    public Timer InitializeTimer(double intervalSeconds)
+    public void InitializeTimer(double intervalSeconds)
     {
-        try
-        {
-            return new Timer(
-                callback: _ => MoveAnimalsEvent(),
-                state: null,
-                dueTime: TimeSpan.FromSeconds(intervalSeconds), // Time to wait before the first execution
-                period: TimeSpan.FromSeconds(intervalSeconds) // Time to wait between executions
-            );
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred while initializing the timer: {ex.Message}");
-            return null;
-        }
+        _moveAnimalsTimer = new Timer(
+            callback: _ => MoveAnimalsEvent(),
+            state: null,
+            dueTime: TimeSpan.FromSeconds(intervalSeconds), // Time to wait before the first execution
+            period: TimeSpan.FromSeconds(intervalSeconds) // Time to wait between executions
+        );
     }
 
 
@@ -155,7 +190,7 @@ public class Zoo
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred while moving animals: {ex.Message}");
+            //Console.WriteLine($"An error occurred while moving animals: {ex.Message}");
         }
     }
 

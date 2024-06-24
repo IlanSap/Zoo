@@ -8,7 +8,15 @@ class Program
         try
         {
             ZooManager zooManager = new ZooManager();
-            zooManager.Run();
+            ConsoleHelper consoleHelper = new ConsoleHelper();
+            if (consoleHelper.GetRunType() == 1)
+            {
+                zooManager.Run();
+            }
+            else
+            {
+                zooManager.RunWithComposite();
+            }
         }
         catch (Exception ex)
         {

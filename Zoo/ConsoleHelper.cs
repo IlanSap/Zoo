@@ -2,76 +2,44 @@
 
 public class ConsoleHelper
 {
-    public void GetInputFromUser(ZooManager zooManager)
+    public int GetZooCount()
     {
-        try
-        {
-            Console.WriteLine("Enter Number of Zoos:");
-            if (!int.TryParse(Console.ReadLine(), out int numberOfZoos) || numberOfZoos <= 0)
-            {
-                Console.WriteLine("Invalid input for Zoo Size. Please enter a positive integer.");
-                return;
-            }
-            zooManager.numberOfZoos = numberOfZoos;
-            Console.WriteLine();
 
-            for (int i = 0; i < numberOfZoos; i++)
-            {
-                Console.WriteLine($"Creating Zoo {i + 1}:");
-                CreateZoo(zooManager);
-                Console.WriteLine();
-            }
-        }
-        catch (Exception ex)
+        Console.WriteLine("Enter Number of Zoos:");
+        if (!int.TryParse(Console.ReadLine(), out int numberOfZoos) || numberOfZoos <= 0)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
+            throw new Exception("Invalid input for Zoo Size. Please enter a positive integer.");
         }
+
+        return numberOfZoos;
     }
 
 
-    private void CreateZoo(ZooManager zooManager)
+    public int GetZooSize()
     {
-        try
+        Console.WriteLine("Enter Zoo Size:");
+        /*if (zooManager._zooList.Count > 0)
+            zooManager._zooList[zooManager._zooList.Count - 1]._zooPlot.lastCourserPosition.row++;*/
+
+        if (!int.TryParse(Console.ReadLine(), out int zooSize) || zooSize <= 0)
         {
-            Console.WriteLine("Enter Zoo Size:");
-
-            if (!int.TryParse(Console.ReadLine(), out int zooSize) || zooSize <= 0)
-            {
-                Console.WriteLine("Invalid input for Zoo Size. Please enter a positive integer.");
-                return;
-            }
-
-            Console.WriteLine("Enter number of animals to place in the zoo:");
-            
-            if (!int.TryParse(Console.ReadLine(), out int animalCount) || animalCount <= 0)
-            {
-                Console.WriteLine("Invalid input for number of animals. Please enter a positive integer.");
-                return;
-            }
-
-            Zoo zoo = new Zoo();
-
-
-            zooManager._zooList.Add(zoo);
-            zoo.SetZooSize(zooSize);
-
-            if (zoo.CanFitAnimals(animalCount))
-            {
-                zooManager.GenerateRandomAnimals(zoo, animalCount);
-            }
-            else
-            {
-                Console.WriteLine($"The zoo of size {zooSize} cannot fit {animalCount} animals.");
-            }
-
-            double intervalSeconds = GetTimeInterval();
-            zoo._intervalSeconds = intervalSeconds;
+            throw new Exception("Invalid input for Zoo Size. Please enter a positive integer.");
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
+
+        return zooSize;
     }
+
+
+    public int GetAnimalCount()
+    {
+        Console.WriteLine("Enter number of animals to place in the zoo:");
+        if (!int.TryParse(Console.ReadLine(), out int animalCount) || animalCount <= 0)
+        {
+            throw new Exception("Invalid input for number of animals. Please enter a positive integer.");
+        }
+        return animalCount;
+    }
+
 
     public double GetTimeInterval()
     {
@@ -82,5 +50,17 @@ public class ConsoleHelper
             return -1;
         }
         return intervalSeconds;
+    }
+
+
+    public int GetRunType()
+    {
+        Console.WriteLine("Enter 1 for regular run, 2 for composite run:");
+        if (!int.TryParse(Console.ReadLine(), out int runType) || (runType != 1 && runType != 2))
+        {
+            Console.WriteLine("Invalid input for run type. Please enter 1 or 2.");
+            return -1;
+        }
+        return runType;
     }
 }   

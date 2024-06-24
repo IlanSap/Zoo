@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public static class GPSTracker
+public class GPSTracker
 {
-    public static Dictionary<Guid, AnimalPosition> animalPositions = new Dictionary<Guid, AnimalPosition>();
+    private readonly Dictionary<Guid, AnimalPosition> animalPositions = new Dictionary<Guid, AnimalPosition>();
 
 
-    public static void AddOrUpdatePosition(Guid animalId, AnimalPosition position)
+    public void AddOrUpdatePosition(Guid animalId, AnimalPosition position)
     {
         if (animalPositions.ContainsKey(animalId))
         {
@@ -21,7 +21,7 @@ public static class GPSTracker
         }
     }
 
-    public static AnimalPosition GetPosition(Guid animalId)
+    public AnimalPosition GetPosition(Guid animalId)
     {
         if (animalPositions.ContainsKey(animalId))
         {
@@ -33,7 +33,7 @@ public static class GPSTracker
         }
     }
 
-    public static void RemovePosition(Guid animalId)
+    public void RemovePosition(Guid animalId)
     {
         if (animalPositions.ContainsKey(animalId))
         {

@@ -17,7 +17,6 @@ public abstract class Animal : IAnimal
 
     public void Move(Func<Animal, bool> moveFn)
     {
-      
         bool success = moveFn.Invoke(this);
 /*        if (!success)
             Console.WriteLine($"Animal {this.AnimalType.ToString()} couldn't find a place to move.");*/

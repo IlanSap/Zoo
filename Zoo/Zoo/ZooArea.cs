@@ -6,15 +6,18 @@ using System.Threading.Tasks;
 
 public class ZooArea
 {
-    private Zoo _zoo;
+    protected Zoo _zoo { get; }
     public Animal[][] _zooMap { get; private set; }
     private int[] zooRow;
     private int[] zooCol;
-    const int AnimalMatrixSize = 2; // Each animal occupies a 2x2 space
+    public int AnimalMatrixSize = 2; // Each animal occupies a 2x2 space
 
-    public ZooArea(Zoo zoo, int size)
+    protected readonly GPSTracker _gpsTracker; //NEW
+
+    public ZooArea(Zoo zoo, int size, GPSTracker gpsTracker)
     {
         _zoo = zoo;
+        _gpsTracker = gpsTracker;
         SetZooSize(size);
     }
 
@@ -41,7 +44,7 @@ public class ZooArea
     }
 
 
-    public bool PlaceAnimal(Animal animal)
+    public virtual bool PlaceAnimal(Animal animal)
     {
         int rowLength = _zooMap.Length;
         int colLength = _zooMap[0].Length;
@@ -49,7 +52,7 @@ public class ZooArea
         {
             for (int c = 0; c < colLength - 1; c++)
             {
-                if (CheckIfEmpty(r, c))
+                if (CheckIfEmpty(animal, r, c))
                 {
                     for (int i = 0; i < AnimalMatrixSize; i++)
                     {
@@ -59,7 +62,7 @@ public class ZooArea
                         }
                     }
                     //animal.AnimalPosition = (r, c);
-                    GPSTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(r,c));
+                    _gpsTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(r,c));
                     // GPSTracker.AddOrUpdateZoo(animal.AnimalId, this._zoo);
                     for (int i = 0; i < AnimalMatrixSize; i++)
                     {
@@ -74,7 +77,7 @@ public class ZooArea
     }
 
 
-    public void UpdateRowAndColArrays(int currentRow, int currentCol, int newRow, int newCol)
+    public virtual void UpdateRowAndColArrays(Animal animal, int currentRow, int currentCol, int newRow, int newCol)
     {
         if (currentRow == newRow && currentCol == newCol)
         {
@@ -94,7 +97,7 @@ public class ZooArea
 
     ///////////////////////////////////////////////////////////////////////////////////
     /////////////////////// MoveAllAnimals Helper Functions //////////////////////////
-    public bool CheckIfEmpty(int row, int col)
+    public virtual bool CheckIfEmpty(Animal animal, int row, int col)
     {
         for (int i = 0; i < AnimalMatrixSize; i++)
         {
@@ -109,7 +112,7 @@ public class ZooArea
         return true;
     }
 
-    public void ClearAnimalPosition(int row, int col)
+    public virtual void ClearAnimalPosition(Animal animal, int row, int col)
     {
         for (int i = 0; i < AnimalMatrixSize; i++)
         {
@@ -120,7 +123,7 @@ public class ZooArea
         }
     }
 
-    public void InsertAnimal(Animal animal, int row, int col)
+    public virtual void InsertAnimal(Animal animal, int row, int col)
     {
         for (int i = 0; i < AnimalMatrixSize; i++)
         {
@@ -130,6 +133,17 @@ public class ZooArea
             }
         }
         //animal.AnimalPosition = (row, col); 
-        GPSTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(row, col)); // track the top-left position of the animal's matrix
+        _gpsTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(row, col)); // track the top-left position of the animal's matrix
+    }
+
+    public virtual void UpdateSpecificCellsAfterAnimalMove(Animal animal, ZooArea zooArea, int oldRow, int oldCol, int newRow, int newCol)
+    {
+        // Clear the old position
+        _zoo._zooPlot.ClearSpecificCells(animal, zooArea, oldRow, oldCol);
+
+        // Update the new position
+        _zoo._zooPlot.UpdateSpecificCells(animal, zooArea, newRow, newCol);
+
+        //Console.SetCursorPosition(this.lastCourserPosition.col, this.lastCourserPosition.row);
     }
 }
