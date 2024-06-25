@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 public class CompositeZooArea : ZooArea
 {
-    public ZooPlot zooPlot;
-    public int _size = 5;
+    private ZooPlot zooPlot;
+    private int _size = 5;
 
     public Dictionary<AnimalType, ZooArea> _areas= new Dictionary<AnimalType, ZooArea>();
     public Dictionary<ZooArea, int> _areaStartRow = new Dictionary<ZooArea, int>();

@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 
 public class ZooManager
 {
-    public List<Zoo> _zooList = new List<Zoo>();
-    public IAnimalFactory _animalFactory;
-    public ConsoleHelper _consoleHelper = new ConsoleHelper();
+    private List<Zoo> _zooList = new List<Zoo>();
+    private IAnimalFactory _animalFactory;
+    private ConsoleHelper _consoleHelper = new ConsoleHelper();
 
 
     public ZooManager()
@@ -121,7 +121,7 @@ public class ZooManager
     }
 
 
-    public void GenerateRandomAnimals(Zoo zoo, int animalCount)
+    private void GenerateRandomAnimals(Zoo zoo, int animalCount)
     {
         try
         {
