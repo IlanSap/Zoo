@@ -2,8 +2,12 @@
 
 public class Zebra : Animal
 {
-    public override int StepSize { get; set; } = 1;
-    public override ConsoleColor AnimalBackgroundColor { get; set; } = ConsoleColor.White;
-    public override ConsoleColor AnimalForegroundColor { get; set; } = ConsoleColor.Black;
-    public override AnimalType AnimalType { get; } = AnimalType.Zebra;
+    public int StepSize { get; set; } = 1;
+    public ConsoleColor AnimalBackgroundColor { get; set; } = ConsoleColor.White;
+    public ConsoleColor AnimalForegroundColor { get; set; } = ConsoleColor.Black;
+    public AnimalType AnimalType { get; set; } = AnimalType.Zebra;
+
+    public Zebra() : base(AnimalType.Zebra, 1, ConsoleColor.White, ConsoleColor.Black)
+    {
+    }
 }

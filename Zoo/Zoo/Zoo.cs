@@ -5,13 +5,13 @@ using System.Reflection;
 
 public class Zoo
 {
-    public List<Animal> _animals = new List<Animal>();
+    public List<Animal> _animals { get; set; } = new List<Animal>();
     public int AnimalMatrixSize = 2; // Each animal occupies a 2x2 space
     public ZooArea _zooArea;
     public ZooPlot _zooPlot = new ZooPlot();
     private Timer _moveAnimalsTimer;
     public double _intervalSeconds;
-    public Guid ZooId { get; }= Guid.NewGuid();
+    public Guid ZooId { get; set; }= Guid.NewGuid();
 
     private readonly GPSTracker _gpsTracker;
 

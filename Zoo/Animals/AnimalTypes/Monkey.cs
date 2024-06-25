@@ -2,8 +2,12 @@
 
 public class Monkey : Animal
 {
-    public override int StepSize { get; set; } = 2;
-    public override ConsoleColor AnimalBackgroundColor { get; set; } = ConsoleColor.Green;
-    public override ConsoleColor AnimalForegroundColor { get; set; } = ConsoleColor.White;
-    public override AnimalType AnimalType { get; } = AnimalType.Monkey;
+    public int StepSize { get; set; } = 2;
+    public ConsoleColor AnimalBackgroundColor { get; set; } = ConsoleColor.Green;
+    public ConsoleColor AnimalForegroundColor { get; set; } = ConsoleColor.White;
+    public AnimalType AnimalType { get; set; } = AnimalType.Monkey;
+
+    public Monkey() : base(AnimalType.Monkey, 2, ConsoleColor.Green, ConsoleColor.White)
+    {
+    }
 }
