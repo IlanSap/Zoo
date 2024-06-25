@@ -53,25 +53,7 @@ public class ZooManager
         try
         {
             //Console.WriteLine("Starting the Zoo Management System...");
-            Console.Clear();
-            Console.SetBufferSize(1000, 1000);
-
-            int marginSize = 5;
-            int startRow = 0;
-            for (int i = 0; i < _zooList.Count; i++)
-            {
-                //Console.WriteLine($"Zoo #{i + 1}:");
-                _zooList[i]._zooPlot.zooStartRow = startRow;
-                _zooList[i]._zooPlot.PlotZoo(_zooList[i]._zooArea, startRow);
-                startRow += (int)(_zooList[i]._zooArea._zooMap.Length + 3 + marginSize);
-                _zooList[i].InitializeTimer(_zooList[i]._intervalSeconds);
-
-                if (i == _zooList.Count - 1)
-                {
-                    _zooList[i]._zooPlot.PrintOneLegend(_zooList);
-                    _zooList[i]._zooPlot.PrintInstructions();
-                }
-            }
+            InitialPlotRegular();
 
             while (true)
             {
@@ -121,7 +103,7 @@ public class ZooManager
 
         try
         {
-            InitialPlot();
+            InitialPlotComposite();
 
             while (true)
             {
@@ -165,7 +147,7 @@ public class ZooManager
     }
 
 
-    private void InitialPlot()
+    private void InitialPlotComposite()
     {
         Console.Clear();
         Console.SetBufferSize(1000, 1000);
@@ -176,6 +158,30 @@ public class ZooManager
         {
             var v = _zooList[i]._zooArea as CompositeZooArea;
             v.PlotAreas();
+            _zooList[i].InitializeTimer(_zooList[i]._intervalSeconds);
+
+            if (i == _zooList.Count - 1)
+            {
+                _zooList[i]._zooPlot.PrintOneLegend(_zooList);
+                _zooList[i]._zooPlot.PrintInstructions();
+            }
+        }
+    }
+
+
+    private void InitialPlotRegular()
+    {
+        Console.Clear();
+        Console.SetBufferSize(1000, 1000);
+
+        int marginSize = 5;
+        int startRow = 0;
+        for (int i = 0; i < _zooList.Count; i++)
+        {
+            //Console.WriteLine($"Zoo #{i + 1}:");
+            _zooList[i]._zooPlot.zooStartRow = startRow;
+            _zooList[i]._zooPlot.PlotZoo(_zooList[i]._zooArea, startRow);
+            startRow += (int)(_zooList[i]._zooArea._zooMap.Length + 3 + marginSize);
             _zooList[i].InitializeTimer(_zooList[i]._intervalSeconds);
 
             if (i == _zooList.Count - 1)
