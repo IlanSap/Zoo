@@ -13,13 +13,6 @@ public class ZooPlot
     public int zooStartRow;
     public int endRow;
 
-    // Convert zoo cell to console cell
-    public CourserPosition ConvertZooCellToConsoleCell(int row, int col, int zooStartRow)
-    {
-        int newRow = zooStartRow + row * 1 + 2;
-        int newCol = col * 3 + 5;
-        return new CourserPosition { row = newRow, col = newCol };
-    }
 
     public void PlotZoo(ZooArea zooArea, int startRow)
     {
@@ -107,7 +100,7 @@ public class ZooPlot
     }
 
 
-    // Print Legend for every Zoo
+    // Print Legend for each Zoo
     private void PrintLegend(Zoo zoo)
     {
         // Print legend with colors and ASCII characters
@@ -131,7 +124,7 @@ public class ZooPlot
     }
 
 
-    // Print Legend for all Zoos
+    // Print Legend for all Zoos once
     public void PrintOneLegend(List<Zoo> zoos)
     {
         // Print legend with colors and ASCII characters
@@ -202,5 +195,12 @@ public class ZooPlot
     private ConsoleColor GetAnimalBackgroundColor(Animal animal)
     {
         return animal == null ? deafultBackgroundColor : animal.AnimalBackgroundColor;
+    }
+
+    private CourserPosition ConvertZooCellToConsoleCell(int row, int col, int zooStartRow)
+    {
+        int newRow = zooStartRow + row * 1 + 2;
+        int newCol = col * 3 + 5;
+        return new CourserPosition { row = newRow, col = newCol };
     }
 }
