@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
+using ZooProject.AnimalFactory;
+using ZooProject.Animals.AnimalTypes;
 
+namespace ZooProject.Zoo;
 
 public class Zoo
 {
@@ -11,7 +16,10 @@ public class Zoo
     public ZooPlot _zooPlot = new ZooPlot();
     private Timer _moveAnimalsTimer;
     public double _intervalSeconds;
-    public Guid ZooId { get; set; }= Guid.NewGuid();
+
+    //[Key]
+    //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid ZooId { get; set; }
 
     private readonly GPSTracker _gpsTracker;
 
@@ -53,7 +61,7 @@ public class Zoo
 
     public void GenerateAnimals(AnimalType type, int count)
     {
-        IAnimalFactory factory = new AnimalFactory();
+        IAnimalFactory factory = new AnimalFactory.AnimalFactory();
         int numOfSucessfulPlacements = 0;
         for (int i = 0; i < count; i++)
         {
@@ -172,26 +180,5 @@ public class Zoo
         {
             //Console.WriteLine($"An error occurred while moving animals: {ex.Message}");
         }
-    }
-
-    // override == operator
-    public static bool operator ==(Zoo zoo1, Zoo zoo2)
-    {
-        if (ReferenceEquals(zoo1, zoo2))
-        {
-            return true;
-        }
-
-        if (ReferenceEquals(zoo1, null) || ReferenceEquals(zoo2, null))
-        {
-            return false;
-        }
-        return zoo1.ZooId == zoo2.ZooId;
-    }
-
-    // override != operator
-    public static bool operator !=(Zoo zoo1, Zoo zoo2)
-    {
-        return !(zoo1 == zoo2);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace ZooProject;
+
 public struct CourserPosition
 {
     public int row { get; set; }

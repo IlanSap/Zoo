@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace ZooProject;
+
 public struct AnimalPosition(int x, int y)
 {
     public int Row { get; set; } = x;

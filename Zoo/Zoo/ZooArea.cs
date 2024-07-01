@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZooProject.Animals.AnimalTypes;
 
+namespace ZooProject.Zoo;
 public class ZooArea
 {
     protected Zoo _zoo { get; }

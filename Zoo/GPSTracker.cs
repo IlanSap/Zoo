@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+namespace ZooProject;
+
 public class GPSTracker
 {
     private readonly Dictionary<Guid, AnimalPosition> animalPositions = new Dictionary<Guid, AnimalPosition>();

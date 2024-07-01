@@ -1,4 +1,7 @@
-﻿public enum AnimalType
+﻿
+namespace ZooProject.Animals.AnimalTypes;
+
+public enum AnimalType
 {
     Lion,
     Monkey,

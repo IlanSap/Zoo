@@ -1,25 +1,26 @@
-﻿using System;
-using System.Threading;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Runtime.InteropServices;
+﻿using ZooProject.AnimalFactory;
+using ZooProject.Animals.AnimalTypes;
+using ZooProject.Zoo;
+using ZooProject.Data;
 
+namespace ZooProject;
 
 public class ZooManager
 {
-    private List<Zoo> _zooList = new List<Zoo>();
+    private readonly List<Zoo.Zoo> _zooList = new List<Zoo.Zoo>();
     private IAnimalFactory _animalFactory;
-    private ConsoleHelper _consoleHelper = new ConsoleHelper();
+    private readonly ConsoleHelper _consoleHelper;
+    private readonly ZooService _zooService;
 
-
-    public ZooManager()
+    public ZooManager(ZooService zooService, ConsoleHelper consoleHelper)
     {
+        _zooService = zooService;
+        _consoleHelper = consoleHelper;
     }
-
 
     public void Run()
     {
-        IAnimalFactory animalFactory = new AnimalFactory();
+        IAnimalFactory animalFactory = new AnimalFactory.AnimalFactory();
         this._animalFactory = animalFactory;
         var tracker = new GPSTracker();
 
@@ -28,15 +29,16 @@ public class ZooManager
         int zooCount = _consoleHelper.GetZooCount();
         for (int i = 0; i < zooCount; i++)
         {
-            var zoo = new Zoo(tracker);
+            var zoo = new Zoo.Zoo(tracker);
             int zooSize = _consoleHelper.GetZooSize();
             zoo.SetZooSize(zooSize);
             zoo._intervalSeconds = _consoleHelper.GetTimeInterval();
             int animalCount = _consoleHelper.GetAnimalCount();
 
-
             _zooList.Add(zoo);
 
+            // Save the zoo and its animals to the database
+            _zooService.AddZoo(zoo);
 
             if (zoo.CanFitAnimals(animalCount))
             {
@@ -47,12 +49,15 @@ public class ZooManager
                 Console.WriteLine($"The zoo of size {zooSize} cannot fit {animalCount} animals.");
             }
 
+            //_zooService.AddZoo(zoo); 
+            _zooService.UpdateZoo(zoo);
+            
+
             Console.WriteLine();
         }
 
         try
         {
-            //Console.WriteLine("Starting the Zoo Management System...");
             InitialPlotRegular();
 
             while (true)
@@ -63,17 +68,15 @@ public class ZooManager
                 }
             }
         }
-        catch
-            (Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine($"An error occurred in Run: {ex.Message}");
         }
     }
 
-
     public void RunWithComposite()
     {
-        IAnimalFactory animalFactory = new AnimalFactory();
+        IAnimalFactory animalFactory = new AnimalFactory.AnimalFactory();
         this._animalFactory = animalFactory;
         var tracker = new GPSTracker();
 
@@ -82,7 +85,10 @@ public class ZooManager
         int zooCount = _consoleHelper.GetZooCount();
         for (int i = 0; i < zooCount; i++)
         {
-            var zoo = new Zoo(tracker);
+            var zoo = new Zoo.Zoo(tracker);
+/*            {
+                ZooId = Guid.NewGuid() // Ensure ZooId is unique
+            };*/
             int zooSize = 25;
             zoo.SetZooSizeComposite(zooSize);
             zoo._intervalSeconds = _consoleHelper.GetTimeInterval();
@@ -98,6 +104,10 @@ public class ZooManager
             {
                 Console.WriteLine($"The zoo of size {zooSize} cannot fit {animalCount} animals.");
             }
+
+            // Save the zoo and its animals to the database
+            _zooService.AddZoo(zoo);
+
             Console.WriteLine();
         }
 
@@ -113,15 +123,13 @@ public class ZooManager
                 }
             }
         }
-        catch
-            (Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine($"An error occurred in Run: {ex.Message}");
         }
     }
 
-
-    private void GenerateRandomAnimals(Zoo zoo, int animalCount)
+    private void GenerateRandomAnimals(Zoo.Zoo zoo, int animalCount)
     {
         try
         {
@@ -133,7 +141,7 @@ public class ZooManager
             {
                 AnimalType animalType = (AnimalType)animalTypes.GetValue(random.Next(animalTypes.Length));
                 Animal animal = _animalFactory.CreateAnimal(animalType);
-                if (zoo._zooArea.PlaceAnimal(animal) == true)
+                if (zoo._zooArea.PlaceAnimal(animal))
                 {
                     zoo.AddAnimal(animal);
                     remainingAnimals--;
@@ -145,7 +153,6 @@ public class ZooManager
             Console.WriteLine($"An error occurred while generating random animals: {ex.Message}");
         }
     }
-
 
     private void InitialPlotComposite()
     {
@@ -168,7 +175,6 @@ public class ZooManager
         }
     }
 
-
     private void InitialPlotRegular()
     {
         Console.Clear();
@@ -178,7 +184,6 @@ public class ZooManager
         int startRow = 0;
         for (int i = 0; i < _zooList.Count; i++)
         {
-            //Console.WriteLine($"Zoo #{i + 1}:");
             _zooList[i]._zooPlot.zooStartRow = startRow;
             _zooList[i]._zooPlot.PlotZoo(_zooList[i]._zooArea, startRow);
             startRow += (int)(_zooList[i]._zooArea._zooMap.Length + 3 + marginSize);

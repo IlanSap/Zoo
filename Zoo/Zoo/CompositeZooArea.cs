@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZooProject.Animals.AnimalTypes;
+
+namespace ZooProject.Zoo;
 
 
 public class CompositeZooArea : ZooArea
 {
     private ZooPlot zooPlot;
-    private int _size = 5;
+    private readonly int _size = 5;
 
     public Dictionary<AnimalType, ZooArea> _areas= new Dictionary<AnimalType, ZooArea>();
     public Dictionary<ZooArea, int> _areaStartRow = new Dictionary<ZooArea, int>();
@@ -35,19 +38,14 @@ public class CompositeZooArea : ZooArea
     {
         ZooArea area;
 
-        /*if (!_areas.TryGetValue(animal.AnimalType, out area))
-        {
-            area = new ZooArea(this._zoo, _size, _gpsTracker); // Initialize with the same size and tracker
-            _areas[animal.AnimalType] = area;
-        }*/
-        if (! _areas.ContainsKey(animal.AnimalType))
+        if (! _areas.TryGetValue(animal.AnimalType, out ZooArea? value))
         {
             area = new ZooArea(this._zoo, _size, _gpsTracker); // Initialize with the same size and tracker
             _areas[animal.AnimalType] = area;
         }
         else
         {
-            area = _areas[animal.AnimalType];
+            area = value;
         }
 
         return area.PlaceAnimal(animal);
@@ -62,13 +60,9 @@ public class CompositeZooArea : ZooArea
 
     public override void InsertAnimal(Animal animal, int row, int col)
     {
-        /*if (_areas.TryGetValue(animal.AnimalType, out ZooArea area))
+        if (_areas.TryGetValue(animal.AnimalType, out ZooArea? value))
         {
-            area.InsertAnimal(animal, row + _areaStartRow[area], col);
-        }*/
-        if (_areas.ContainsKey(animal.AnimalType))
-        {
-            _areas[animal.AnimalType].InsertAnimal(animal, row, col);
+            value.InsertAnimal(animal, row, col);
         }
     }
 
@@ -86,10 +80,7 @@ public class CompositeZooArea : ZooArea
 
     public override void UpdateRowAndColArrays(Animal animal, int currentRow, int currentCol, int newRow, int newCol)
     {
-        foreach (var area in _areas.Values)
-        {
-            _areas[animal.AnimalType].UpdateRowAndColArrays(animal, currentRow, currentCol, newRow, newCol);
-        }
+        _areas[animal.AnimalType].UpdateRowAndColArrays(animal, currentRow, currentCol, newRow, newCol);
     }
 
 

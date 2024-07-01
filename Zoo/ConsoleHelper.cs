@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace ZooProject;
+
 public class ConsoleHelper
 {
     public int GetZooCount()

@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace ZooProject.Animals.AnimalTypes;
+
 public class Monkey : Animal
 {
     public int StepSize { get; set; } = 2;

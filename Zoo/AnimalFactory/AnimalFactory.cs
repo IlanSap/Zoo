@@ -1,5 +1,7 @@
 ﻿using System;
+using ZooProject.Animals.AnimalTypes;
 
+namespace ZooProject.AnimalFactory;
 
 public class AnimalFactory : IAnimalFactory
 {

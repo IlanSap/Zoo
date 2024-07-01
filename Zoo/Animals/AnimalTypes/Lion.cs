@@ -1,5 +1,8 @@
 ﻿using System;
 
+namespace ZooProject.Animals.AnimalTypes;
+
+
 public class Lion : Animal
 {
     public int StepSize { get; set; } = 1;
@@ -8,7 +11,7 @@ public class Lion : Animal
     public AnimalType AnimalType { get; set; } = AnimalType.Lion;
 
 
-    public Lion() : base(AnimalType.Lion, 2, ConsoleColor.Yellow, ConsoleColor.Black)
+    public Lion() : base(AnimalType.Lion, 2, ConsoleColor.Yellow, ConsoleColor.Red)
     {
     }
 }

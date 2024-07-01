@@ -4,18 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+namespace ZooProject.Animals.AnimalTypes;
+
 
 public class Animal : IAnimal
 {
-    public Guid AnimalId { get; set; } = Guid.NewGuid();
-
-    public Guid ZooId { get; set; } // NEW
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid AnimalId { get; set; }
 
     public int StepSize { get; set; }
 
     public System.ConsoleColor AnimalBackgroundColor { get; set; }
     public System.ConsoleColor AnimalForegroundColor { get; set; }
 
+
+    [Required]
     public AnimalType AnimalType { get; set; }
 
     public void Move(Func<Animal, bool> moveFn)
@@ -27,6 +33,7 @@ public class Animal : IAnimal
 
     public Animal(AnimalType animalType, int stepSize=1, ConsoleColor animalBackgroundColor= ConsoleColor.Black, ConsoleColor animalForegroundColor= ConsoleColor.White)
     {
+        AnimalId = Guid.NewGuid(); // Ensure AnimalId is unique
         AnimalType = animalType;
         StepSize = stepSize;
         AnimalBackgroundColor = animalBackgroundColor;

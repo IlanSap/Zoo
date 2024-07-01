@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZooProject.Animals.AnimalTypes;
+using ZooProject.Zoo;
+
+namespace ZooProject;
 
 public class ZooPlot
 {
@@ -101,7 +105,7 @@ public class ZooPlot
 
 
     // Print Legend for each Zoo
-    private void PrintLegend(Zoo zoo)
+    private void PrintLegend(Zoo.Zoo zoo)
     {
         // Print legend with colors and ASCII characters
         Console.WriteLine("Legend:");
@@ -125,7 +129,7 @@ public class ZooPlot
 
 
     // Print Legend for all Zoos once
-    public void PrintOneLegend(List<Zoo> zoos)
+    public void PrintOneLegend(List<Zoo.Zoo> zoos)
     {
         // Print legend with colors and ASCII characters
         Console.WriteLine("Legend:");

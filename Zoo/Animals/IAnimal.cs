@@ -1,4 +1,7 @@
-﻿public interface IAnimal
+﻿
+namespace ZooProject.Animals.AnimalTypes;
+
+public interface IAnimal
 {
     Guid AnimalId { get;}
 
