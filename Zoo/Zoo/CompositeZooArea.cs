@@ -10,14 +10,14 @@ namespace ZooProject.Zoo;
 
 public class CompositeZooArea : ZooArea
 {
-    private ZooPlot zooPlot;
+    private readonly ZooPlot _zooPlot;
     private readonly int _size = 5;
 
     public Dictionary<AnimalType, ZooArea> _areas= new Dictionary<AnimalType, ZooArea>();
     public Dictionary<ZooArea, int> _areaStartRow = new Dictionary<ZooArea, int>();
 
 
-    public CompositeZooArea(Zoo zoo, int size, GPSTracker gpsTracker, ZooPlot zooPlot) : base(zoo, size, gpsTracker) => this.zooPlot = zooPlot;
+    public CompositeZooArea(Zoo zoo, int size, GPSTracker gpsTracker, ZooPlot zooPlot) : base(zoo, size, gpsTracker) => this._zooPlot = zooPlot;
 
 
     public void PlotAreas()
@@ -27,7 +27,7 @@ public class CompositeZooArea : ZooArea
 
         foreach (var area in _areas.Values)
         {
-            zooPlot.PlotZoo(area, startRow);
+            _zooPlot.PlotZoo(area, startRow);
             _areaStartRow[area] = startRow;
             startRow += (int)(area._zooMap.Length + 3 + marginSize);
         }
@@ -69,12 +69,7 @@ public class CompositeZooArea : ZooArea
 
     public override bool CheckIfEmpty(Animal animal, int row, int col)
     {
-
-        if (!_areas[animal.AnimalType].CheckIfEmpty(animal, row, col)) 
-        {
-            return false;
-        }
-        return true;
+        return _areas[animal.AnimalType].CheckIfEmpty(animal, row, col);
     }
 
 
@@ -94,6 +89,6 @@ public class CompositeZooArea : ZooArea
         row= newRow + _areaStartRow[_areas[animal.AnimalType]];
         _zoo._zooPlot.UpdateSpecificCells(animal, _areas[animal.AnimalType], row, newCol);
 
-        //Console.SetCursorPosition(this.lastCourserPosition.col, this.lastCourserPosition.row);
+        //Console.SetCursorPosition(this.lastCourserPosition.Col, this.lastCourserPosition.Row);
     }
 }

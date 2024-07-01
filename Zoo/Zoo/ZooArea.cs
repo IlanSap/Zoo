@@ -143,6 +143,6 @@ public class ZooArea
         // Update the new position
         _zoo._zooPlot.UpdateSpecificCells(animal, zooArea, newRow, newCol);
 
-        //Console.SetCursorPosition(this.lastCourserPosition.col, this.lastCourserPosition.row);
+        //Console.SetCursorPosition(this.lastCourserPosition.Col, this.lastCourserPosition.Row);
     }
 }

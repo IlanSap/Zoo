@@ -4,18 +4,18 @@ namespace ZooProject;
 
 public struct CourserPosition
 {
-    public int row { get; set; }
-    public int col { get; set; }
+    public int Row { get; set; }
+    public int Col { get; set; }
 
     // Operator overloading for the == operator
     public static bool operator ==(CourserPosition a, CourserPosition b)
     {
-        return a.row == b.row && a.col == b.col;
+        return a.Row == b.Row && a.Col == b.Col;
     }
 
     // Operator overloading for the != operator
     public static bool operator !=(CourserPosition a, CourserPosition b)
     {
-        return a.row != b.row || a.col != b.col;
+        return a.Row != b.Row || a.Col != b.Col;
     }
 }

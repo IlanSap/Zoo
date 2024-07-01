@@ -7,14 +7,11 @@ public struct AnimalPosition(int x, int y)
     public int Row { get; set; } = x;
     public int Col { get; set; } = y;
 
-    public (int, int) ToTuple() => (Row, Col);
+    public readonly (int, int) ToTuple() => (Row, Col);
 
-    public override string ToString()
-    {
-        return $"({Row}, {Col})";
-    }
+    public override string ToString() => $"({Row}, {Col})";
 
-    public void Deconstruct(out int row, out int col)
+    public readonly void Deconstruct(out int row, out int col)
     {
         row = Row;
         col = Col;

@@ -155,7 +155,7 @@ public class ZooPlot
             for (int j = 0; j < zooArea.AnimalMatrixSize; j++)
             {
                 CourserPosition position = ConvertZooCellToConsoleCell(row + i, col + j, this.zooStartRow);
-                Console.SetCursorPosition(position.col, position.row);
+                Console.SetCursorPosition(position.Col, position.Row);
                 Console.ForegroundColor = deafultForegroundColor;
                 Console.BackgroundColor = deafultBackgroundColor;
                 Console.Write(" . "); // Clear the 2x2 space
@@ -175,7 +175,7 @@ public class ZooPlot
             for (int j = 0; j < zooArea.AnimalMatrixSize; j++)
             {
                 CourserPosition position = ConvertZooCellToConsoleCell(row + i, col + j, this.zooStartRow);
-                Console.SetCursorPosition(position.col, position.row);
+                Console.SetCursorPosition(position.Col, position.Row);
                 Console.ForegroundColor = foregroundColor;
                 Console.BackgroundColor = backgroundColor;
                 Console.Write($" {animalChar} ");
@@ -205,6 +205,6 @@ public class ZooPlot
     {
         int newRow = zooStartRow + row * 1 + 2;
         int newCol = col * 3 + 5;
-        return new CourserPosition { row = newRow, col = newCol };
+        return new CourserPosition { Row = newRow, Col = newCol };
     }
 }
