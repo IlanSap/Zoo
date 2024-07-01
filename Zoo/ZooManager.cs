@@ -18,6 +18,7 @@ public class ZooManager
         _consoleHelper = consoleHelper;
     }
 
+
     public void Run()
     {
         IAnimalFactory animalFactory = new AnimalFactory.AnimalFactory();
@@ -29,29 +30,21 @@ public class ZooManager
         int zooCount = _consoleHelper.GetZooCount();
         for (int i = 0; i < zooCount; i++)
         {
-            var zoo = new Zoo.Zoo(tracker);
+
             int zooSize = _consoleHelper.GetZooSize();
-            zoo.SetZooSize(zooSize);
-            zoo.IntervalSeconds = _consoleHelper.GetTimeInterval();
             int animalCount = _consoleHelper.GetAnimalCount();
+            double intervalSeconds = _consoleHelper.GetTimeInterval();
+            var zoo = CreateZoo(zooSize, intervalSeconds, tracker);
 
             _zooList.Add(zoo);
 
             // Save the zoo and its animals to the database
             _zooService.AddZoo(zoo);
 
-            if (zoo.CanFitAnimals(animalCount))
-            {
-                GenerateRandomAnimals(zoo, animalCount);
-            }
-            else
-            {
-                Console.WriteLine($"The zoo of size {zooSize} cannot fit {animalCount} animals.");
-            }
+            PopulateZoo(zoo, animalCount);
 
             //_zooService.AddZoo(zoo); 
             _zooService.UpdateZoo(zoo);
-            
 
             Console.WriteLine();
         }
@@ -73,6 +66,33 @@ public class ZooManager
             Console.WriteLine($"An error occurred in Run: {ex.Message}");
         }
     }
+
+
+    public Zoo.Zoo CreateZoo(int zooSize, double intervalSeconds, GPSTracker tracker = null)
+    {
+        if (tracker == null)
+        {
+            tracker = new GPSTracker();
+        }
+        var zoo = new Zoo.Zoo(tracker);
+        zoo.SetZooSize(zooSize);
+        zoo.IntervalSeconds = intervalSeconds;
+        return zoo;
+    }
+
+
+    public void PopulateZoo(Zoo.Zoo zoo, int animalCount)
+    {
+        if (zoo.CanFitAnimals(animalCount))
+        {
+            GenerateRandomAnimals(zoo, animalCount);
+        }
+        else
+        {
+            Console.WriteLine($"The zoo of size {zoo.ZooArea.ZooMap.Length} cannot fit {animalCount} animals.");
+        }
+    }
+
 
     public void RunWithComposite()
     {
