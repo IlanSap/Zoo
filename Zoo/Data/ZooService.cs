@@ -7,35 +7,25 @@ using System.Threading.Tasks;
 
 namespace ZooProject.Data;
 
-public class ZooService
-{
+public class ZooService {
     private readonly ZooContext _context;
 
-    public ZooService(ZooContext context)
-    {
+    public ZooService(ZooContext context) {
         _context = context;
     }
 
 
-    public void AddZoo(Zoo.Zoo zoo)
-    {
-        if (_context.Entry(zoo).State == EntityState.Detached)
-        {
+    public void AddZoo(Zoo.Zoo zoo) {
+        if (_context.Entry(zoo).State == EntityState.Detached) {
             _context.Zoos.Attach(zoo);
-        }
-        else
-        {
+        } else {
             _context.Zoos.Add(zoo);
         }
 
-        foreach (var animal in zoo.Animals)
-        {
-            if (_context.Entry(animal).State == EntityState.Detached)
-            {
+        foreach (var animal in zoo.Animals) {
+            if (_context.Entry(animal).State == EntityState.Detached) {
                 _context.Animals.Attach(animal);
-            }
-            else
-            {
+            } else {
                 _context.Animals.Add(animal);
             }
         }
@@ -43,15 +33,16 @@ public class ZooService
         _context.SaveChanges();
     }
 
-    public void UpdateZoo(Zoo.Zoo zoo)
-    {
+    public void UpdateZoo(Zoo.Zoo zoo) {
         _context.Zoos.Update(zoo);
         _context.SaveChanges();
     }
 
-    public List<Zoo.Zoo> GetAllZoos()
-    {
+    public Zoo.Zoo GetZoo(Guid zooId) {
+        throw new NotImplementedException();
+    }
+
+    public List<Zoo.Zoo> GetAllZoos() {
         return _context.Zoos.Include(z => z.Animals).ToList();
     }
 }
-
