@@ -18,6 +18,10 @@ public class ZooManager
         _consoleHelper = consoleHelper;
     }
 
+    public ZooManager()
+    {
+    }
+
 
     public void Run()
     {
