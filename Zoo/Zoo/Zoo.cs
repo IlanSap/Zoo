@@ -10,12 +10,12 @@ namespace ZooProject.Zoo;
 
 public class Zoo
 {
-    public List<Animal> _animals { get; set; } = new List<Animal>();
+    public List<Animal> Animals { get; set; } = new List<Animal>();
     public int AnimalMatrixSize = 2; // Each animal occupies a 2x2 space
-    public ZooArea _zooArea;
-    public ZooPlot _zooPlot = new ZooPlot();
+    public ZooArea ZooArea;
+    public ZooPlot ZooPlot = new ZooPlot();
+    public double IntervalSeconds;
     private Timer _moveAnimalsTimer;
-    public double _intervalSeconds;
 
     //[Key]
     //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -37,13 +37,13 @@ public class Zoo
 
     public void SetZooSize(int size)
     {
-        _zooArea = new ZooArea(this, size, _gpsTracker);
+        ZooArea = new ZooArea(this, size, _gpsTracker);
     }
 
 
     public void SetZooSizeComposite(int size)
     {
-        _zooArea = new CompositeZooArea(this, size, _gpsTracker, _zooPlot);
+        ZooArea = new CompositeZooArea(this, size, _gpsTracker, ZooPlot);
     }
 
 
@@ -55,35 +55,35 @@ public class Zoo
 
     public void AddAnimal(Animal animal)
     {
-        _animals.Add(animal);
+        Animals.Add(animal);
     }
 
 
     public void GenerateAnimals(AnimalType type, int count)
     {
         IAnimalFactory factory = new AnimalFactory.AnimalFactory();
-        int numOfSucessfulPlacements = 0;
+        int numOfSuccessfulPlacements = 0;
         for (int i = 0; i < count; i++)
         {
             Animal animal = factory.CreateAnimal(type);
-            if (_zooArea.PlaceAnimal(animal) == false)
+            if (ZooArea.PlaceAnimal(animal) == false)
             {
                 Console.WriteLine($"The {(animal.AnimalType).ToString()} couldn't be placed.");
             }
             else
             {
                 AddAnimal(animal);
-                numOfSucessfulPlacements++;
+                numOfSuccessfulPlacements++;
             }
         }
-        Console.WriteLine($"{numOfSucessfulPlacements} out of {count} {type.ToString()}s were placed in the zoo.");
+        Console.WriteLine($"{numOfSuccessfulPlacements} out of {count} {type.ToString()}s were placed in the zoo.");
     }
 
 
     public void MoveAllAnimals()
     {
          
-        foreach (var animal in _animals)
+        foreach (var animal in Animals)
         {
             animal.Move(MoveAnimal);
         }
@@ -117,15 +117,15 @@ public class Zoo
             int newRow = currentRow + dirRow * this.GetAnimalMatrixSize();
             int newCol = currentCol + dirCol * this.GetAnimalMatrixSize();
 
-            ZooArea zooArea = _zooArea;
+            ZooArea zooArea = ZooArea;
 
-            if (_zooArea is CompositeZooArea _compositeZooArea)
+            if (ZooArea is CompositeZooArea _compositeZooArea)
             {
-                zooArea = _compositeZooArea._areas[animal.AnimalType];
+                zooArea = _compositeZooArea.Areas[animal.AnimalType];
             }
 
-            if (newRow >= 0 && newRow <= zooArea._zooMap.Length - this.GetAnimalMatrixSize() &&
-                newCol >= 0 && newCol <= zooArea._zooMap[0].Length - this.GetAnimalMatrixSize() &&
+            if (newRow >= 0 && newRow <= zooArea.ZooMap.Length - this.GetAnimalMatrixSize() &&
+                newCol >= 0 && newCol <= zooArea.ZooMap[0].Length - this.GetAnimalMatrixSize() &&
                 zooArea.CheckIfEmpty(animal, newRow, newCol))
             {
                 zooArea.ClearAnimalPosition(animal, currentRow, currentCol);
@@ -134,11 +134,11 @@ public class Zoo
 
                 if (zooArea is CompositeZooArea compositeZooArea)
                 {
-                    currentRow += compositeZooArea._areaStartRow[compositeZooArea._areas[animal.AnimalType]];
-                    newRow += compositeZooArea._areaStartRow[compositeZooArea._areas[animal.AnimalType]];
+                    currentRow += compositeZooArea.AreaStartRow[compositeZooArea.Areas[animal.AnimalType]];
+                    newRow += compositeZooArea.AreaStartRow[compositeZooArea.Areas[animal.AnimalType]];
                 }
 
-                _zooArea.UpdateSpecificCellsAfterAnimalMove(animal, zooArea, currentRow, currentCol, newRow, newCol);
+                ZooArea.UpdateSpecificCellsAfterAnimalMove(animal, zooArea, currentRow, currentCol, newRow, newCol);
 
                 moved = true;
             }
@@ -153,7 +153,7 @@ public class Zoo
 
     public bool CanFitAnimals(int animalCount)
     {
-        int availableSpace = (_zooArea._zooMap.Length * _zooArea._zooMap[0].Length) / (AnimalMatrixSize * AnimalMatrixSize);
+        int availableSpace = (ZooArea.ZooMap.Length * ZooArea.ZooMap[0].Length) / (AnimalMatrixSize * AnimalMatrixSize);
         return animalCount <= availableSpace;
     }
 

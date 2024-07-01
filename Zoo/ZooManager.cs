@@ -32,7 +32,7 @@ public class ZooManager
             var zoo = new Zoo.Zoo(tracker);
             int zooSize = _consoleHelper.GetZooSize();
             zoo.SetZooSize(zooSize);
-            zoo._intervalSeconds = _consoleHelper.GetTimeInterval();
+            zoo.IntervalSeconds = _consoleHelper.GetTimeInterval();
             int animalCount = _consoleHelper.GetAnimalCount();
 
             _zooList.Add(zoo);
@@ -91,7 +91,7 @@ public class ZooManager
             };*/
             int zooSize = 25;
             zoo.SetZooSizeComposite(zooSize);
-            zoo._intervalSeconds = _consoleHelper.GetTimeInterval();
+            zoo.IntervalSeconds = _consoleHelper.GetTimeInterval();
             int animalCount = _consoleHelper.GetAnimalCount();
 
             _zooList.Add(zoo);
@@ -141,7 +141,7 @@ public class ZooManager
             {
                 AnimalType animalType = (AnimalType)animalTypes.GetValue(random.Next(animalTypes.Length));
                 Animal animal = _animalFactory.CreateAnimal(animalType);
-                if (zoo._zooArea.PlaceAnimal(animal))
+                if (zoo.ZooArea.PlaceAnimal(animal))
                 {
                     zoo.AddAnimal(animal);
                     remainingAnimals--;
@@ -163,14 +163,14 @@ public class ZooManager
         int startRow = 0;
         for (int i = 0; i < _zooList.Count; i++)
         {
-            var v = _zooList[i]._zooArea as CompositeZooArea;
+            var v = _zooList[i].ZooArea as CompositeZooArea;
             v.PlotAreas();
-            _zooList[i].InitializeTimer(_zooList[i]._intervalSeconds);
+            _zooList[i].InitializeTimer(_zooList[i].IntervalSeconds);
 
             if (i == _zooList.Count - 1)
             {
-                _zooList[i]._zooPlot.PrintOneLegend(_zooList);
-                _zooList[i]._zooPlot.PrintInstructions();
+                _zooList[i].ZooPlot.PrintOneLegend(_zooList);
+                _zooList[i].ZooPlot.PrintInstructions();
             }
         }
     }
@@ -184,15 +184,15 @@ public class ZooManager
         int startRow = 0;
         for (int i = 0; i < _zooList.Count; i++)
         {
-            _zooList[i]._zooPlot.zooStartRow = startRow;
-            _zooList[i]._zooPlot.PlotZoo(_zooList[i]._zooArea, startRow);
-            startRow += (int)(_zooList[i]._zooArea._zooMap.Length + 3 + marginSize);
-            _zooList[i].InitializeTimer(_zooList[i]._intervalSeconds);
+            _zooList[i].ZooPlot.zooStartRow = startRow;
+            _zooList[i].ZooPlot.PlotZoo(_zooList[i].ZooArea, startRow);
+            startRow += (int)(_zooList[i].ZooArea.ZooMap.Length + 3 + marginSize);
+            _zooList[i].InitializeTimer(_zooList[i].IntervalSeconds);
 
             if (i == _zooList.Count - 1)
             {
-                _zooList[i]._zooPlot.PrintOneLegend(_zooList);
-                _zooList[i]._zooPlot.PrintInstructions();
+                _zooList[i].ZooPlot.PrintOneLegend(_zooList);
+                _zooList[i].ZooPlot.PrintInstructions();
             }
         }
     }

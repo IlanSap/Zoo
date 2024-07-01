@@ -28,7 +28,7 @@ public class ZooService
             _context.Zoos.Add(zoo);
         }
 
-        foreach (var animal in zoo._animals)
+        foreach (var animal in zoo.Animals)
         {
             if (_context.Entry(animal).State == EntityState.Detached)
             {
@@ -51,7 +51,7 @@ public class ZooService
 
     public List<Zoo.Zoo> GetAllZoos()
     {
-        return _context.Zoos.Include(z => z._animals).ToList();
+        return _context.Zoos.Include(z => z.Animals).ToList();
     }
 }
 

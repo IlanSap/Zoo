@@ -37,7 +37,7 @@ public class ZooPlot
 
             // Print column indicators with improved spacing
             Console.Write("    "); // Space for row indicators
-            for (int col = 0; col < zooArea._zooMap[0].Length; col++)
+            for (int col = 0; col < zooArea.ZooMap[0].Length; col++)
             {
                 Console.Write($"{col % 100,2} "); // Use modulo for double-digit numbers, with padding for alignment
             }
@@ -46,22 +46,22 @@ public class ZooPlot
 
             // Print top border with improved visibility
             Console.Write("   +"); // Align with row indicators
-            for (int col = 0; col < zooArea._zooMap[0].Length; col++)
+            for (int col = 0; col < zooArea.ZooMap[0].Length; col++)
             {
                 Console.Write("---");
             }
 
             Console.WriteLine("+");
 
-            for (int i = 0; i < zooArea._zooMap.Length; i++)
+            for (int i = 0; i < zooArea.ZooMap.Length; i++)
             {
                 // Print row indicator with padding for alignment
                 Console.Write($"{i % 100,3} |"); // Use modulo for double-digit numbers
 
-                for (int j = 0; j < zooArea._zooMap[i].Length; j++)
+                for (int j = 0; j < zooArea.ZooMap[i].Length; j++)
                 {
                     lastRow = Console.CursorTop;
-                    Animal animal = zooArea._zooMap[i][j];
+                    Animal animal = zooArea.ZooMap[i][j];
                     char animalChar = GetMappedAnimalChar(animal);
                     Console.ForegroundColor = GetAnimalForegroundColor(animal);
                     Console.BackgroundColor = GetAnimalBackgroundColor(animal);
@@ -75,7 +75,7 @@ public class ZooPlot
 
             // Print bottom border
             Console.Write("   +"); // Align with row indicators
-            for (int col = 0; col < zooArea._zooMap[0].Length; col++)
+            for (int col = 0; col < zooArea.ZooMap[0].Length; col++)
             {
                 Console.Write("---");
             }
@@ -111,7 +111,7 @@ public class ZooPlot
         Console.WriteLine("Legend:");
 
         HashSet<string> animalTypes = new HashSet<string>();
-        foreach (var animal in zoo._animals)
+        foreach (var animal in zoo.Animals)
         {
             // check if animal is already in the legend
             if (animalTypes.Contains(animal.AnimalType.ToString()))
@@ -134,7 +134,7 @@ public class ZooPlot
         // Print legend with colors and ASCII characters
         Console.WriteLine("Legend:");
 
-        zoos.SelectMany(z => z._animals)
+        zoos.SelectMany(z => z.Animals)
             .DistinctBy(z => z.AnimalType)
             .ToList()
             .ForEach(a => {

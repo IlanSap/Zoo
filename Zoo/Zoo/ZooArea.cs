@@ -8,44 +8,44 @@ using ZooProject.Animals.AnimalTypes;
 namespace ZooProject.Zoo;
 public class ZooArea
 {
-    protected Zoo _zoo { get; }
-    public Animal[][] _zooMap { get; private set; }
-    private int[] zooRow;
-    private int[] zooCol;
+    protected Zoo Zoo { get; }
+    public Animal[][] ZooMap { get; private set; }
+    private int[] _zooRow;
+    private int[] _zooCol;
     public int AnimalMatrixSize = 2; // Each animal occupies a 2x2 space
 
-    protected readonly GPSTracker _gpsTracker;
+    protected readonly GPSTracker GpsTracker;
 
 
     public ZooArea(Zoo zoo, int size, GPSTracker gpsTracker)
     {
-        _zoo = zoo;
-        _gpsTracker = gpsTracker;
+        Zoo = zoo;
+        GpsTracker = gpsTracker;
         SetZooSize(size);
     }
 
 
     public void SetZooSize(int size)
     {
-        _zooMap = new Animal[size][];
+        ZooMap = new Animal[size][];
 
         for (int i = 0; i < size; i++)
         {
-            _zooMap[i] = new Animal[size];
-            Array.Fill(_zooMap[i], null); // fill the array with spaces indicating empty spaces.
+            ZooMap[i] = new Animal[size];
+            Array.Fill(ZooMap[i], null); // fill the array with spaces indicating empty spaces.
         }
 
-        zooCol = new int[size];
-        Array.Fill(zooCol, 0);
-        zooRow = new int[size];
-        Array.Fill(zooRow, 0);
+        _zooCol = new int[size];
+        Array.Fill(_zooCol, 0);
+        _zooRow = new int[size];
+        Array.Fill(_zooRow, 0);
     }
 
 
     public virtual bool PlaceAnimal(Animal animal)
     {
-        int rowLength = _zooMap.Length;
-        int colLength = _zooMap[0].Length;
+        int rowLength = ZooMap.Length;
+        int colLength = ZooMap[0].Length;
         for (int r = 0; r < rowLength - 1; r++)
         {
             for (int c = 0; c < colLength - 1; c++)
@@ -56,15 +56,15 @@ public class ZooArea
                     {
                         for (int j = 0; j < AnimalMatrixSize; j++)
                         {
-                            _zooMap[r + i][c + j] = animal;
+                            ZooMap[r + i][c + j] = animal;
                         }
                     }
-                    _gpsTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(r,c));
+                    GpsTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(r,c));
 
                     for (int i = 0; i < AnimalMatrixSize; i++)
                     {
-                        zooRow[r + i] += AnimalMatrixSize;
-                        zooCol[c + i] += AnimalMatrixSize;
+                        _zooRow[r + i] += AnimalMatrixSize;
+                        _zooCol[c + i] += AnimalMatrixSize;
                     }
                     return true;
                 }
@@ -81,14 +81,14 @@ public class ZooArea
             return;
         }
         if (currentRow < 0 || currentCol < 0 || newRow < 0 || newCol < 0 ||
-            currentRow >= _zooMap.Length || currentCol >= _zooMap[0].Length || newRow >= _zooMap.Length || newCol >= _zooMap[0].Length)
+            currentRow >= ZooMap.Length || currentCol >= ZooMap[0].Length || newRow >= ZooMap.Length || newCol >= ZooMap[0].Length)
         {
             return;
         }
-        zooCol[currentCol] -= AnimalMatrixSize;
-        zooCol[newCol] += AnimalMatrixSize;
-        zooRow[currentRow] -= AnimalMatrixSize;
-        zooRow[newRow] += AnimalMatrixSize;
+        _zooCol[currentCol] -= AnimalMatrixSize;
+        _zooCol[newCol] += AnimalMatrixSize;
+        _zooRow[currentRow] -= AnimalMatrixSize;
+        _zooRow[newRow] += AnimalMatrixSize;
     }
 
 
@@ -100,7 +100,7 @@ public class ZooArea
         {
             for (int j = 0; j < AnimalMatrixSize; j++)
             {
-                if (_zooMap[row + i][col + j] != null)
+                if (ZooMap[row + i][col + j] != null)
                 {
                     return false;
                 }
@@ -116,7 +116,7 @@ public class ZooArea
         {
             for (int j = 0; j < AnimalMatrixSize; j++)
             {
-                _zooMap[row + i][col + j] = null;
+                ZooMap[row + i][col + j] = null;
             }
         }
     }
@@ -128,20 +128,20 @@ public class ZooArea
         {
             for (int j = 0; j < AnimalMatrixSize; j++)
             {
-                _zooMap[row + i][col + j] = animal;
+                ZooMap[row + i][col + j] = animal;
             }
         }
-        _gpsTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(row, col)); // track the top-left position of the animal's matrix
+        GpsTracker.AddOrUpdatePosition(animal.AnimalId, new AnimalPosition(row, col)); // track the top-left position of the animal's matrix
     }
 
 
     public virtual void UpdateSpecificCellsAfterAnimalMove(Animal animal, ZooArea zooArea, int oldRow, int oldCol, int newRow, int newCol)
     {
         // Clear the old position
-        _zoo._zooPlot.ClearSpecificCells(animal, zooArea, oldRow, oldCol);
+        Zoo.ZooPlot.ClearSpecificCells(animal, zooArea, oldRow, oldCol);
 
         // Update the new position
-        _zoo._zooPlot.UpdateSpecificCells(animal, zooArea, newRow, newCol);
+        Zoo.ZooPlot.UpdateSpecificCells(animal, zooArea, newRow, newCol);
 
         //Console.SetCursorPosition(this.lastCourserPosition.Col, this.lastCourserPosition.Row);
     }

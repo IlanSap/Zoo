@@ -64,13 +64,13 @@ namespace ZooProject.Migrations
             modelBuilder.Entity("ZooProject.Animals.AnimalTypes.Animal", b =>
                 {
                     b.HasOne("ZooProject.Zoo.Zoo", null)
-                        .WithMany("_animals")
+                        .WithMany("Animals")
                         .HasForeignKey("ZooId");
                 });
 
             modelBuilder.Entity("ZooProject.Zoo.Zoo", b =>
                 {
-                    b.Navigation("_animals");
+                    b.Navigation("Animals");
                 });
 #pragma warning restore 612, 618
         }
